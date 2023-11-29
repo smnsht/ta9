@@ -1,0 +1,40 @@
+table {
+	width: 100%;
+	border-collapse: collapse;	
+}
+
+table thead th {
+	text-align: left;
+	font-size: smaller;	
+}
+
+table thead th:first {
+	width: 10%;
+}
+
+table thead th:nth-last-child(1), th:nth-last-child(2), th:nth-last-child(3) {
+	width: 15%;
+}
+
+table tbody tr {
+	border-bottom: 1px solid gray;
+}
+
+table tbody tr td {
+	color: grey;
+	padding: 1em;	
+}
+
+table tbody tr:hover {
+	border: 1px solid blue;
+}
+
+table tbody tr td:hover {
+	color: blue;
+}
+
+div.color-button {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 5px;
+}

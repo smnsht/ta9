@@ -1,0 +1,52 @@
+main {
+	padding: 2em;
+}
+
+.top-top {
+	display: flex;
+	margin-bottom: 1em;
+}
+
+.top-top .col-left {
+	width: 50%;
+}
+
+.top-top .col-left h3 {
+	margin: 0;
+}
+
+.top-top .col-right {
+	width: 50%;
+	text-align: right;
+}
+
+.top-top .col-right button {	
+	height: 2em;
+	border-radius: 5px;
+	margin-left: 1em;	
+}
+
+.top-top .col-right button.selected {
+	border-style: none;
+}
+
+header {
+	margin-bottom: 2em;
+}
+
+header input {
+	width: 100%;
+	padding: 1em;
+	box-sizing: border-box;
+}
+
+footer {
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	padding: 1em;
+}
+
+footer div.pager {
+	text-align: center;
+}

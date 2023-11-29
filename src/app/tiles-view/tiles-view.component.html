@@ -1,0 +1,6 @@
+<div class="grid-container">
+	<div class="grid-item" *ngFor="let item of items">
+		<div class="color-button" [ngStyle]="{'background-color': item.color}">&nbsp;</div>				
+		<div>{{item.name | truncate:10}}</div>
+	</div>
+</div>
