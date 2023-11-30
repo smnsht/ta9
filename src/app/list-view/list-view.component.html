@@ -8,8 +8,8 @@
 			<th>Created By</th>
 		</tr>
 	</thead>
-	<tbody>
-		<tr *ngFor="let item of items">
+	<tbody *ngIf="items">
+		<tr *ngFor="let item of items" (dblclick)="rowDoubleClick(item)">
 			<td>
 				<div class="color-button" [ngStyle]="{'background-color': item.color}">&nbsp;</div>
 			</td>

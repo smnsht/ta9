@@ -1,23 +1,23 @@
 <dialog open>
 	<header>
-		<button>x</button>
+		<button (click)="closeClick()">x</button>
 	</header>
 	
-	<h3>Edit/Create</h3>
+	<h3>{{title}}</h3>
 	
-	<form>
+	<form #fmr="ngForm">
 		<div>
-			<input type="text" placeholder="Type tag name..."/>
-			<input type="color" />			
+			<label>Name/Tag</label>
+			<input type="text" [(ngModel)]="model.name" name="name" placeholder="Type tag name..."/>			
 		</div>
 		<div>
-			<label>Tag Description</label>
-			<textarea cols="50" placeholder="Type tag description..."></textarea>
+			<label>Color</label>
+			<input type="color" [(ngModel)]="model.color" name="color" />			
 		</div>
 	</form>
 
 	<div class="footer">
-		<button>Cancel</button>
-		<button>Save</button>
+		<button (click)="closeClick()">Cancel</button>
+		<button (click)="saveClick()">Save</button>
 	</div>
 </dialog>

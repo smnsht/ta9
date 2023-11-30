@@ -1,7 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
 import { Item } from '../app.models';
+import { Store } from '@ngrx/store';
+import { editItem } from '../store/items.store';
 
 @Component({
   selector: 'app-list-view',
@@ -12,5 +14,12 @@ import { Item } from '../app.models';
 })
 export class ListViewComponent {
   @Input()
-  items: Item[] = [];
+  items: Item[] | undefined;
+
+  private store = inject(Store<any>)
+  //constructor(private store: Store<any>) {}
+
+  rowDoubleClick(item: Item): void {    
+    this.store.dispatch(editItem({ item }))
+  }
 }

@@ -8,3 +8,9 @@ export interface Item {
 }
 
 export type ItemEditDTO = Exclude<Item, 'created_at' | 'created_at' | 'created_by'>;
+
+export interface Pager {
+	totalRows: number;
+	rowsPerPage: number;
+	currentPage: number;
+}

@@ -27,7 +27,7 @@ main {
 }
 
 .top-top .col-right button.selected {
-	border-style: none;
+	border-style: dashed;
 }
 
 header {
@@ -40,8 +40,7 @@ header input {
 	box-sizing: border-box;
 }
 
-footer {
-	position: fixed;
+footer {	
 	bottom: 0;
 	width: 100%;
 	padding: 1em;

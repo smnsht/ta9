@@ -4,30 +4,32 @@
     <div class="top-top">
       <span class="col-left"><h3>Management Tool</h3></span>
       <span class="col-right">
-        <button>Grid View</button>
-        <button>Tail View</button>
-        <button>Add New</button>
+        <button (click)="view = 'list'" [ngClass]="{ 'selected': 'list' == view }">List View</button>
+        <button (click)="view = 'tiles'" [ngClass]="{ 'selected': 'tiles' == view }">Tail View</button>
+        <button (click)="addNewClick()">Add New</button>
       </span>      
     </div>   
     
-    <input type="text" placeholder="Find by name..." />    
+    <input type="text" placeholder="Find by name..." (input)="filterInput($event)" [value]="(itemsStore$ | async)?.filter" />    
   </header>
 
   <div class="content">
-    <app-details-form></app-details-form>
-    <app-list-view *ngIf="1 > 1" [items]="items"></app-list-view>
-    <app-tiles-view [items]="items"></app-tiles-view>
+    <app-details-form *ngIf="(itemsStore$ | async)?.selectedItem"></app-details-form>
+    <app-list-view *ngIf="view == 'list'" [items]="(itemsStore$ | async)?.items"></app-list-view>
+    <app-tiles-view *ngIf="view == 'tiles'" [items]="(itemsStore$ | async)?.items"></app-tiles-view> 
+    <pre>{{ (itemsStore$ | async)?.selectedItem | json }}</pre>   
   </div>  
 
-  <footer>
+  <footer>    
     <div class="pager">
-      Total items: <b>666</b> Items per page: 
-      <select>
-        <option value="5">5</option>
-        <option value="10">10</option>      
+      Total items: <b>{{ (pager$ | async)?.totalRows }}</b> Items per page: {{ (pager$ | async)?.rowsPerPage }}
+      <select (change)="rowsPerPageChanged($event)">
+        <option *ngFor="let v of rowsPerPageOptions" [value]="v">{{ v }}</option>
       </select>
       &nbsp;  
-      <button>&lt;&lt;Prev</button> Page: <b>1</b> of 3 <button>Next &gt;&gt;</button>
+      <button (click)="prevPageClick()">&lt;&lt;Prev</button> 
+      Page: <b>{{ (pager$ | async)?.currentPage }}</b> of ?
+      <button (click)="nextPageClick()">Next &gt;&gt;</button>
     </div>    
   </footer>
 </main>
