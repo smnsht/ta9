@@ -4,7 +4,7 @@ export interface Item {
 	color: string;
 	created_at: Date;
 	updated_at: Date;
-	created_by: String;
+	created_by: string;
 }
 
 export type ItemEditDTO = Exclude<Item, 'created_at' | 'created_at' | 'created_by'>;

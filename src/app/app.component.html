@@ -1,16 +1,18 @@
-
 <main class="main">
   <header>
     <div class="top-top">
-      <span class="col-left"><h3>Management Tool</h3></span>
+      <span class="col-left">
+        <h3>Management Tool</h3>
+      </span>
       <span class="col-right">
         <button (click)="view = 'list'" [ngClass]="{ 'selected': 'list' == view }">List View</button>
         <button (click)="view = 'tiles'" [ngClass]="{ 'selected': 'tiles' == view }">Tail View</button>
         <button (click)="addNewClick()">Add New</button>
-      </span>      
-    </div>   
-    
-    <input type="text" placeholder="Find by name..." (input)="filterInput($event)" [value]="(itemsStore$ | async)?.filter" />    
+      </span>
+    </div>
+
+    <input type="text" placeholder="Find by name..." (input)="filterInput($event)"
+      [value]="(itemsStore$ | async)?.filter" />
   </header>
 
   <div class="content">
@@ -19,16 +21,12 @@
     -->
     <app-details-form *ngIf="(itemsStore$ | async)?.selectedItem"></app-details-form>
     <app-list-view *ngIf="view == 'list'"></app-list-view>
-    <app-tiles-view *ngIf="view == 'tiles'" [items]="(itemsStore$ | async)?.items"></app-tiles-view>     
-  </div>  
+    <app-tiles-view *ngIf="view == 'tiles'" [items]="(itemsStore$ | async)?.items"></app-tiles-view>
+  </div>
 
-  <footer>        
-    <app-pager 
-      [pager]="pager2$ | async" 
-      [options]="[4, 5, 10, 20]" 
-      (nextPageClick)="nextPageClick()" 
-      (prevPageClick)="prevPageClick()" 
-      (rowsPerPageChanged)="rowsPerPageChanged($event)">
+  <footer>
+    <app-pager [pager]="pager2$ | async" [options]="[4, 5, 10, 20]" (nextPageClick)="nextPageClick()"
+      (prevPageClick)="prevPageClick()" (rowsPerPageChanged)="rowsPerPageChanged($event)">
     </app-pager>
   </footer>
 </main>

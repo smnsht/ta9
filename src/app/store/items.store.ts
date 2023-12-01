@@ -6,7 +6,7 @@ export interface ItemsStore {
 	items: Array<Item>;
 	filter: string,
 	selectedItem?: Item;
-};
+}
 
 const initialState: ItemsStore = {
 	items: new Array<Item>(),	
