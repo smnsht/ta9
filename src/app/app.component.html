@@ -14,21 +14,21 @@
   </header>
 
   <div class="content">
+    <pre>{{ (items2$ | async) | json }}</pre>   
     <app-details-form *ngIf="(itemsStore$ | async)?.selectedItem"></app-details-form>
-    <app-list-view *ngIf="view == 'list'" [items]="(itemsStore$ | async)?.items"></app-list-view>
-    <app-tiles-view *ngIf="view == 'tiles'" [items]="(itemsStore$ | async)?.items"></app-tiles-view> 
-    <pre>{{ (itemsStore$ | async)?.selectedItem | json }}</pre>   
+    <app-list-view *ngIf="view == 'list'"></app-list-view>
+    <app-tiles-view *ngIf="view == 'tiles'" [items]="(itemsStore$ | async)?.items"></app-tiles-view>     
   </div>  
 
   <footer>    
     <div class="pager">
-      Total items: <b>{{ (pager$ | async)?.totalRows }}</b> Items per page: {{ (pager$ | async)?.rowsPerPage }}
+      Total items: <b>{{ (pager2$ | async)?.totalRows }}</b> Items per page: {{ (pager2$ | async)?.rowsPerPage }}
       <select (change)="rowsPerPageChanged($event)">
         <option *ngFor="let v of rowsPerPageOptions" [value]="v">{{ v }}</option>
       </select>
       &nbsp;  
       <button (click)="prevPageClick()">&lt;&lt;Prev</button> 
-      Page: <b>{{ (pager$ | async)?.currentPage }}</b> of ?
+      Page: <b>{{ (pager2$ | async)?.currentPage }}</b> of {{ (pager2$ | async)?.lastPage }}
       <button (click)="nextPageClick()">Next &gt;&gt;</button>
     </div>    
   </footer>

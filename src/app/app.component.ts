@@ -15,7 +15,8 @@ import {
   setTotalRows
 } from './store/pager.store';
 import { Store } from '@ngrx/store';
-import { ItemsStore, editItem, selectItems, setFilter, setItems } from './store/items.store';
+import { ItemsStore, editItem, itemsSelector, setFilter, setItems } from './store/items.store';
+import { ItemsState, itemsSelector2, nextPageClick2, pagerSelector, prevPageClick2, setItems2 } from './items.state';
 
 type ViewType = 'list' | 'tiles';
 
@@ -30,11 +31,15 @@ export class AppComponent implements OnInit {
   title = 'ta9';
   view: ViewType = 'list';
 
-  items$ = new Observable<Item[]>;
+  items$: Observable<Item[]>;
+  items2$: Observable<Item[]>;
   itemsStore$: Observable<ItemsStore>;
-  //items: Item[] = [];
+  state$: Observable<ItemsState>;
+  
+  //itemss$: Observable<Item[]>;
 
   pager$: Observable<Pager>;
+  pager2$: Observable<Pager>;
   rowsPerPageOptions = RowsPerPageTypeValues;  
 
   constructor(
@@ -43,13 +48,20 @@ export class AppComponent implements OnInit {
   ) {
     this.pager$ = store.select('pager');
     this.itemsStore$ = store.select('items');
+    this.state$ = store.select('items2');
+
+    this.items$ = this.store.select(itemsSelector);
+    this.items2$ = this.store.select(itemsSelector2);
+    this.pager2$ = this.store.select(pagerSelector);
   }
 
   ngOnInit(): void {
     this.itemsService.get().subscribe(items => {      
       this.store.dispatch(setItems({ items }));
       this.store.dispatch(setTotalRows({ totalRows: items.length }));
-    });    
+
+      this.store.dispatch(setItems2({ items }));
+    });        
   }  
 
   filterInput(event: Event) {
@@ -66,11 +78,11 @@ export class AppComponent implements OnInit {
   }
 
   nextPageClick(): void {
-    this.store.dispatch(nextPageClickAction());
+    this.store.dispatch(nextPageClick2());
   }
 
   prevPageClick(): void {
-    this.store.dispatch(prevPageClickAction());
+    this.store.dispatch(prevPageClick2());
   }
 
   addNewClick(): void {    

@@ -1,14 +1,16 @@
-import { createAction, createReducer, on, props } from "@ngrx/store";
-import { Item, Pager } from "../app.models";
+import { createAction, createFeatureSelector, createReducer, createSelector, on, props } from "@ngrx/store";
+import { Item } from "../app.models";
+import { currentPageSelector, rowsPerPageSelector } from "./pager.store";
 
 export interface ItemsStore {
 	items: Array<Item>;
-	filter?: string,
+	filter: string,
 	selectedItem?: Item;
 };
 
 const initialState: ItemsStore = {
 	items: new Array<Item>(),	
+	filter: ''
 } as const;
 
 export const setItems = createAction('[Items] set items', props<{ items: Item[] }>());
@@ -51,16 +53,36 @@ export const itemsReducer = createReducer(
 	})
 );
 
-export const selectItems = (itemsStore: ItemsStore, pager: Pager) => { 	
-	const startFrom = pager.currentPage 
-		? (pager.currentPage - 1) * pager.rowsPerPage
-		: 0;
+// export const selectItems = (itemsStore: ItemsStore, pager: Pager) => { 	
+// 	const startFrom = pager.currentPage 
+// 		? (pager.currentPage - 1) * pager.rowsPerPage
+// 		: 0;
 
-	const items = itemsStore.filter 
-		? itemsStore.items.filter(item => item.name.includes(itemsStore.filter!)) 
-		: itemsStore.items;
+// 	const items = itemsStore.filter 
+// 		? itemsStore.items.filter(item => item.name.includes(itemsStore.filter!)) 
+// 		: itemsStore.items;
 	
-	return items.slice(startFrom, pager.rowsPerPage)
-};
-export const selectFilter = (state: ItemsStore) => state.filter;
-export const selectSelectedItem = (state: ItemsStore) => state.selectedItem;
+// 	return items.slice(startFrom, pager.rowsPerPage)
+// };
+
+const getItemsStore = createFeatureSelector<ItemsStore>("items");
+
+export const filterSelector = createSelector(getItemsStore, s => s.filter);
+export const selectedItemSelector = createSelector(getItemsStore, s => s.selectedItem);
+export const itemsSelector = createSelector(
+	getItemsStore, 
+	currentPageSelector, 
+	rowsPerPageSelector,
+	({ items, filter }, currentPage, rowsPerPage) => {
+		const startFrom = currentPage > 0
+		 		? (currentPage - 1) * rowsPerPage
+		 		: 0;
+			
+		if(filter) {
+			const _filter = filter!.toLowerCase();
+			return items.filter(i => i.name.toLowerCase().includes(_filter)).slice(startFrom, rowsPerPage);
+		}
+		
+		return items.slice(startFrom, rowsPerPage);
+	}
+);

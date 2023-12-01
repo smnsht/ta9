@@ -3,6 +3,7 @@ import { ApplicationConfig, InjectionToken } from '@angular/core';
 import { provideState, provideStore } from '@ngrx/store';
 import { pagerReducer } from './store/pager.store';
 import { itemsReducer } from './store/items.store';
+import { reducer } from './items.state';
 
 export const BACKEND_URL = new InjectionToken<string>("backend url");
 
@@ -17,6 +18,10 @@ export const appConfig: ApplicationConfig = {
     provideState({
       name: 'items',
       reducer: itemsReducer
+    }),
+    provideState({
+      name: 'items2',
+      reducer: reducer
     }),
     { 
       provide: BACKEND_URL, 
