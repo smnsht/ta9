@@ -16,14 +16,15 @@ import {
 } from './store/pager.store';
 import { Store } from '@ngrx/store';
 import { ItemsStore, editItem, itemsSelector, setFilter, setItems } from './store/items.store';
-import { ItemsState, itemsSelector2, nextPageClick2, pagerSelector, prevPageClick2, setItems2 } from './items.state';
+import { ItemsState, itemsSelector2, nextPageClick2, pagerSelector, prevPageClick2, setItems2, setRowsPerPage2 } from './items.state';
+import { PagerComponent } from './pager/pager.component';
 
 type ViewType = 'list' | 'tiles';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, ListViewComponent, TilesViewComponent, DetailsFormComponent],
+  imports: [CommonModule, ListViewComponent, TilesViewComponent, DetailsFormComponent, PagerComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
@@ -69,12 +70,10 @@ export class AppComponent implements OnInit {
     this.store.dispatch(setFilter({ filter: input.value }));
   }
 
-  rowsPerPageChanged(event: Event): void {
-    const v = (<HTMLSelectElement>event.target).value;
-    const action = setRowsPerPage({
-      rowsPerPage: <RowsPerPageType>Number.parseInt(v)
-    });
-    this.store.dispatch(setRowsPerPage(action));
+  rowsPerPageChanged(val: number): void {                
+    this.store.dispatch(
+      setRowsPerPage2({ rowsPerPage: val })
+    );
   }
 
   nextPageClick(): void {

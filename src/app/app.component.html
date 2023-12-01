@@ -14,22 +14,21 @@
   </header>
 
   <div class="content">
+    <!--
     <pre>{{ (items2$ | async) | json }}</pre>   
+    -->
     <app-details-form *ngIf="(itemsStore$ | async)?.selectedItem"></app-details-form>
     <app-list-view *ngIf="view == 'list'"></app-list-view>
     <app-tiles-view *ngIf="view == 'tiles'" [items]="(itemsStore$ | async)?.items"></app-tiles-view>     
   </div>  
 
-  <footer>    
-    <div class="pager">
-      Total items: <b>{{ (pager2$ | async)?.totalRows }}</b> Items per page: {{ (pager2$ | async)?.rowsPerPage }}
-      <select (change)="rowsPerPageChanged($event)">
-        <option *ngFor="let v of rowsPerPageOptions" [value]="v">{{ v }}</option>
-      </select>
-      &nbsp;  
-      <button (click)="prevPageClick()">&lt;&lt;Prev</button> 
-      Page: <b>{{ (pager2$ | async)?.currentPage }}</b> of {{ (pager2$ | async)?.lastPage }}
-      <button (click)="nextPageClick()">Next &gt;&gt;</button>
-    </div>    
+  <footer>        
+    <app-pager 
+      [pager]="pager2$ | async" 
+      [options]="[4, 5, 10, 20]" 
+      (nextPageClick)="nextPageClick()" 
+      (prevPageClick)="prevPageClick()" 
+      (rowsPerPageChanged)="rowsPerPageChanged($event)">
+    </app-pager>
   </footer>
 </main>

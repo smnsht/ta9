@@ -19,6 +19,7 @@ const initialState: ItemsState = {
 export const setItems2 = createAction('Set items', props<{ items: Item[] }>());
 export const nextPageClick2 = createAction('Next Page Click');
 export const prevPageClick2 = createAction('Prev Page Click');
+export const setRowsPerPage2 = createAction('[Pager] Rows per Page', props<{ rowsPerPage: number }>());
 
 export const reducer = createReducer(
 	initialState,
@@ -50,6 +51,16 @@ export const reducer = createReducer(
 				totalRows: state.pager.totalRows,
 				rowsPerPage: state.pager.rowsPerPage,			
 				currentPage: state.pager.currentPage - 1
+			})
+		}
+	}),
+	on(setRowsPerPage2, (state, { rowsPerPage }) => {		
+		return {
+			...state,
+			pager: new PagerImpl({
+				totalRows: state.pager.totalRows,				
+				currentPage: state.pager.currentPage,
+				rowsPerPage: rowsPerPage,			
 			})
 		}
 	})

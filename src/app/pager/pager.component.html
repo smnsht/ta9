@@ -1,0 +1,12 @@
+<div class="pager">
+	Total items: <b>{{ pager?.totalRows }}</b> Items per page: {{ pager?.rowsPerPage }}
+	
+	<select (change)="changed($event)">
+	  <option *ngFor="let v of options" [value]="v">{{ v }}</option>
+	</select>
+	
+	&nbsp;  
+	<button (click)="prevClick()" [disabled]="!pager || 1 == pager.currentPage">&lt;&lt;Prev</button> 
+	Page: <b>{{  pager?.currentPage }}</b> of {{ pager?.lastPage }}
+	<button (click)="nextClick()" [disabled]="!pager || pager.currentPage == pager.lastPage">Next &gt;&gt;</button>
+  </div>    
