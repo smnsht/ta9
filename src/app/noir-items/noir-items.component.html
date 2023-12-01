@@ -1,0 +1,68 @@
+<header>
+	<div class="top-top">
+		<span class="col-left">
+			<h3>Management Tool</h3>
+		</span>
+		<span class="col-right">
+			<button (click)="view = 'list'" [ngClass]="{ 'selected': 'list' == view }">
+				List View
+			</button>
+			<button (click)="view = 'tiles'" [ngClass]="{ 'selected': 'tiles' == view }">
+				Tail View
+			</button>
+			<button onclick="alert('new new new!')">
+				Add New
+			</button>
+		</span>
+	</div>
+
+	<input type="text" placeholder="Find by name..." (input)="filterInput($event)" [value]="filter$ | async" />
+</header>
+
+<div class="content">
+	<app-noir-items-form [item]="selectedItem$ | async"></app-noir-items-form>
+
+	<table *ngIf="'list' == view">
+		<thead>
+			<tr>
+				<th>Color</th>
+				<th>Name</th>
+				<th>Create Date</th>
+				<th>Last Update</th>
+				<th>Created By</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr *ngFor="let item of items$ | async" (dblclick)="doubleClick(item)">
+				<td>
+					<div class="color-button" [ngStyle]="{'background-color': item.color}">&nbsp;</div>
+				</td>
+				<td>{{item.name}}</td>
+				<td>{{item.created_at | date: 'shortDate'}}</td>
+				<td>{{item.updated_at | date: 'shortDate'}}</td>
+				<td>{{item.created_by}}</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="grid-container" *ngIf="'tiles' == view">
+		<div class="grid-item" *ngFor="let item of items$ | async">
+			<div class="color-button" 
+				[ngStyle]="{'background-color': item.color}" 
+				(dblclick)="doubleClick(item)">
+				&nbsp;
+			</div>				
+			<div>{{item.name | truncate:10}}</div>
+		</div>
+	</div>	
+</div>
+
+<footer>    
+	<app-pager 
+		[pager]="pager$ | async" 
+		[options]="[4, 5, 10, 20]" 
+		(nextPageClick)="nextPageClick()"
+		(prevPageClick)="prevPageClick()" 
+		(rowsPerPageChanged)="rowsPerPageChanged($event)">
+	</app-pager>    
+</footer>

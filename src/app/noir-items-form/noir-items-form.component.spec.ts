@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TilesViewComponent } from './tiles-view.component';
+import { NoirItemsFormComponent } from './noir-items-form.component';
 
-describe('TilesViewComponent', () => {
-  let component: TilesViewComponent;
-  let fixture: ComponentFixture<TilesViewComponent>;
+describe('NoirItemsFormComponent', () => {
+  let component: NoirItemsFormComponent;
+  let fixture: ComponentFixture<NoirItemsFormComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TilesViewComponent]
+      imports: [NoirItemsFormComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(TilesViewComponent);
+    fixture = TestBed.createComponent(NoirItemsFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

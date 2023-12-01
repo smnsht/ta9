@@ -15,11 +15,15 @@ const initialState: ItemsState = {
 } as const;
 
 
-//export const setPager = createAction('Set pager', props<{ pager: Pager}>());
 export const setItems2 = createAction('Set items', props<{ items: Item[] }>());
 export const nextPageClick2 = createAction('Next Page Click');
 export const prevPageClick2 = createAction('Prev Page Click');
-export const setRowsPerPage2 = createAction('[Pager] Rows per Page', props<{ rowsPerPage: number }>());
+export const setRowsPerPage2 = createAction('Set Rows per Page', props<{ rowsPerPage: number }>());
+export const setFilter2 = createAction('Set filter', props<{ filter: string }>());
+
+export const editItem = createAction('Edit Item', props<{ item: Item }>());
+export const addNewItem = createAction('Add New Item');
+export const cancelEditItem = createAction('Cancel Edit Item');
 
 export const reducer = createReducer(
 	initialState,
@@ -63,6 +67,37 @@ export const reducer = createReducer(
 				rowsPerPage: rowsPerPage,			
 			})
 		}
+	}),
+	on(setFilter2, (state, { filter }) => {
+		return {
+			...state,
+			filter
+		}
+	}),
+	on(editItem, (state, { item }) => {
+		return {
+			...state,
+			selectedItem: item
+		}
+	}),
+	on(addNewItem, (state) => {
+		return {
+			...state,
+			selectedItem: {
+				id: '',
+				name: '',
+				color: '',
+				created_at: new Date(),
+				updated_at: new Date(),
+				created_by: 'me'
+			}
+		}
+	}),
+	on(cancelEditItem, (state) => {
+		return {
+			...state,
+			selectedItem: undefined
+		}
 	})
 );
 
@@ -79,7 +114,8 @@ export const itemsSelector2 = createSelector(getItemsState2, s => {
 		return s.items.filter(i => i.name.toLowerCase().includes(_filter)).slice(startFrom, rowsPerPage);
 	}
 				
-	return s.items.slice(startFrom, rowsPerPage);
+	return s.items.slice(startFrom, startFrom + rowsPerPage);
 });
 export const pagerSelector = createSelector(getItemsState2, s => s.pager);
 export const selectedItemSelector = createSelector(getItemsState2, s => s.selectedItem);
+export const filterSelector = createSelector(getItemsState2, s => s.filter);

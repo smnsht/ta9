@@ -1,18 +1,19 @@
-<dialog open>
+<dialog *ngIf="item" open>
 	<header>
 		<button (click)="closeClick()">x</button>
 	</header>
 	
-	<h3>{{title}}</h3>
+	<h3 *ngIf="!item.id">Add New Item</h3>
+	<h3 *ngIf="item.id">Edit Item</h3>
 	
-	<form #fmr="ngForm">
+	<form>
 		<div>
 			<label>Name/Tag</label>
-			<input type="text" [(ngModel)]="model.name" name="name" placeholder="Type tag name..."/>			
+			<input type="text"  name="name" placeholder="Type tag name..."/>			
 		</div>
 		<div>
 			<label>Color</label>
-			<input type="color" [(ngModel)]="model.color" name="color" />			
+			<input type="color" name="color" />			
 		</div>
 	</form>
 

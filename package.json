@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "server": "json-server --port 3000 --watch server/noir_db.json"
+    "server": "json-server --port 3000 --watch server/noir_db.json",
+    "lint": "eslint . --ext .ts --fix"
   },
   "private": true,
   "dependencies": {
