@@ -15,19 +15,19 @@ const initialState: ItemsState = {
 } as const;
 
 
-export const setItems2 = createAction('Set items', props<{ items: Item[] }>());
-export const nextPageClick2 = createAction('Next Page Click');
-export const prevPageClick2 = createAction('Prev Page Click');
-export const setRowsPerPage2 = createAction('Set Rows per Page', props<{ rowsPerPage: number }>());
-export const setFilter2 = createAction('Set filter', props<{ filter: string }>());
+export const setItems = createAction('Set items', props<{ items: Item[] }>());
+export const nextPageClick = createAction('Next Page Click');
+export const prevPageClick = createAction('Prev Page Click');
+export const setRowsPerPage = createAction('Set Rows per Page', props<{ rowsPerPage: number }>());
+export const setFilter = createAction('Set filter', props<{ filter: string }>());
 
-export const editItem = createAction('Edit Item', props<{ item: Item }>());
+export const editItem = createAction('Edit Item', props<{ item: Item, override: boolean }>());
 export const addNewItem = createAction('Add New Item');
 export const cancelEditItem = createAction('Cancel Edit Item');
 
 export const reducer = createReducer(
 	initialState,
-	on(setItems2, (state, { items }) => {		
+	on(setItems, (state, { items }) => {		
 		return {
 			...state,
 			items: items,
@@ -38,7 +38,7 @@ export const reducer = createReducer(
 			})
 		}
 	}),
-	on(nextPageClick2, (state) => {		
+	on(nextPageClick, (state) => {		
 		return {
 			...state,
 			pager: new PagerImpl({
@@ -48,7 +48,7 @@ export const reducer = createReducer(
 			})
 		}
 	}),
-	on(prevPageClick2, (state) => {		
+	on(prevPageClick, (state) => {		
 		return {
 			...state,
 			pager: new PagerImpl({
@@ -58,7 +58,7 @@ export const reducer = createReducer(
 			})
 		}
 	}),
-	on(setRowsPerPage2, (state, { rowsPerPage }) => {		
+	on(setRowsPerPage, (state, { rowsPerPage }) => {		
 		return {
 			...state,
 			pager: new PagerImpl({
@@ -68,13 +68,18 @@ export const reducer = createReducer(
 			})
 		}
 	}),
-	on(setFilter2, (state, { filter }) => {
+	on(setFilter, (state, { filter }) => {
 		return {
 			...state,
 			filter
 		}
 	}),
-	on(editItem, (state, { item }) => {
+	on(editItem, (state, { item, override }) => {
+		// if any item already selected and flag 'override' not set, the state not altered
+		if(!override && state.selectedItem) {
+			return state;
+		}
+
 		return {
 			...state,
 			selectedItem: item
@@ -86,7 +91,7 @@ export const reducer = createReducer(
 			selectedItem: {
 				id: '',
 				name: '',
-				color: '',
+				color: '#000000',
 				created_at: new Date(),
 				updated_at: new Date(),
 				created_by: 'me'

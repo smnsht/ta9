@@ -6,19 +6,49 @@
 	<h3 *ngIf="!item.id">Add New Item</h3>
 	<h3 *ngIf="item.id">Edit Item</h3>
 	
-	<form>
+	<form #itemForm="ngForm">
 		<div>
 			<label>Name/Tag</label>
-			<input type="text"  name="name" placeholder="Type tag name..."/>			
+			<input 
+				type="text" 
+				id="name" 
+				name="name" 
+				size="20"				
+				required
+				minlength="2"
+				maxlength="20"								
+				pattern="^[^<>\x22\x27\x60]+$"
+				placeholder="Type tag name..."
+				autocomplete="off"
+				[(ngModel)]="item.name" 
+				#name="ngModel"
+			/>			
 		</div>
+		<div *ngIf="name.invalid && (name.dirty || name.touched)" class="validation-messages">  		
+			<div *ngIf="name.errors?.['required']">Name is required.</div>
+			<div *ngIf="name.errors?.['pattern']">Invalid characters detected.</div>
+			<div *ngIf="name.errors?.['minlength']">
+			  Name must be at least 2 characters long.
+			</div>
+	  	</div>
 		<div>
 			<label>Color</label>
-			<input type="color" name="color" />			
-		</div>
+			<input 
+				type="color" 
+				name="color" 
+				id="color"
+				required
+				[(ngModel)]="item.color" 
+				#color="ngModel"
+			/>			
+		</div>		
+		<div *ngIf="color.invalid && (color.dirty || color.touched)" class="validation-messages">
+			<div *ngIf="color.errors?.['required']">Color is required.</div>
+		</div>	
 	</form>
-
+		
 	<div class="footer">
 		<button (click)="closeClick()">Cancel</button>
-		<button (click)="saveClick()">Save</button>
+		<button (click)="saveClick()" [disabled]="itemForm.invalid">Save</button>
 	</div>
 </dialog>

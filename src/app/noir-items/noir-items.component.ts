@@ -1,13 +1,26 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
-import { ItemsState, editItem, filterSelector, itemsSelector2, nextPageClick2, pagerSelector, prevPageClick2, selectedItemSelector, setFilter2, setItems2, setRowsPerPage2 } from '../items.state';
 import { Store } from '@ngrx/store';
 import { Item, Pager } from '../app.models';
 import { ItemsService } from '../items.service';
 import { PagerComponent } from '../pager/pager.component';
 import { TruncatePipe } from '../truncate.pipe';
 import { NoirItemsFormComponent } from '../noir-items-form/noir-items-form.component';
+import { 
+  ItemsState, 
+  addNewItem, 
+  editItem, 
+  filterSelector, 
+  itemsSelector2, 
+  nextPageClick, 
+  pagerSelector, 
+  prevPageClick, 
+  selectedItemSelector, 
+  setFilter, 
+  setItems, 
+  setRowsPerPage 
+} from '../items.state';
 
 
 type ViewType = 'list' | 'tiles';
@@ -40,30 +53,41 @@ export class NoirItemsComponent implements OnInit {
 
   ngOnInit(): void {
     this.itemsService.get().subscribe(items => {
-      this.store.dispatch(setItems2({ items }));
+      this.store.dispatch(setItems({ items }));
     });
   }
 
   filterInput(event: Event) {
     const input: HTMLInputElement = <HTMLInputElement>event.target;
-    this.store.dispatch(setFilter2({ filter: input.value }));
+    this.store.dispatch(setFilter({ filter: input.value }));
   }
 
   rowsPerPageChanged(val: number): void {
     this.store.dispatch(
-      setRowsPerPage2({ rowsPerPage: val })
+      setRowsPerPage({ rowsPerPage: val })
     );
   }
 
   nextPageClick(): void {
-    this.store.dispatch(nextPageClick2());
+    this.store.dispatch(nextPageClick());
   }
 
   prevPageClick(): void {
-    this.store.dispatch(prevPageClick2());
+    this.store.dispatch(prevPageClick());
   }
 
   doubleClick(item: Item): void {        
-    this.store.dispatch(editItem({ item }))    
+    this.store.dispatch(editItem({ 
+      item, 
+      override: false 
+    }))    
+  }
+
+  addNewClick(): void {
+    this.store.dispatch(addNewItem());
+  }
+
+  saveItem(item: Item): void {
+    console.log(item);
   }
 }

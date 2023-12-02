@@ -1,5 +1,6 @@
 dialog {
 	height: 70%;
+	width: 25em;
 	margin-right: 2em;
 	margin-left: auto;
 }
@@ -31,4 +32,8 @@ div.footer button {
 
 div.footer button:nth-child(1) {
 	margin-right: 1em;
+}
+
+div.validation-messages div {
+	color: red;
 }

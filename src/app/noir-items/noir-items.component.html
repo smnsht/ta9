@@ -10,7 +10,7 @@
 			<button (click)="view = 'tiles'" [ngClass]="{ 'selected': 'tiles' == view }">
 				Tail View
 			</button>
-			<button onclick="alert('new new new!')">
+			<button (click)="addNewClick()" [disabled]="selectedItem$ | async">
 				Add New
 			</button>
 		</span>
@@ -20,7 +20,11 @@
 </header>
 
 <div class="content">
-	<app-noir-items-form [item]="selectedItem$ | async"></app-noir-items-form>
+	<app-noir-items-form 
+		[item]="selectedItem$ | async" 
+		(saveClicked)="saveItem($event)"
+	>
+	</app-noir-items-form>
 
 	<table *ngIf="'list' == view">
 		<thead>
@@ -33,7 +37,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr *ngFor="let item of items$ | async" (dblclick)="doubleClick(item)">
+			<tr *ngFor="let item of items$ | async;" (dblclick)="doubleClick(item)">
 				<td>
 					<div class="color-button" [ngStyle]="{'background-color': item.color}">&nbsp;</div>
 				</td>
