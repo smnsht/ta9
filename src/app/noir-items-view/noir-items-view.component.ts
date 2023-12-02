@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Item, ItemsViewType } from '../app.models';
-import { ItemsState, editItem, itemsSelector, itemsViewSelector } from '../items.state';
+import { ItemsState } from '../state/items.state';
 import { Store } from '@ngrx/store';
 import { TruncatePipe } from '../truncate.pipe';
 import { Observable } from 'rxjs';
+import { editItem } from '../state/items.reducer';
+import { itemsSelector, itemsViewSelector } from '../state/items.selectors';
 
 @Component({
   selector: 'app-noir-items-view',

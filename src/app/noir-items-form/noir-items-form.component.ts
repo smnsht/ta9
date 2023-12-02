@@ -1,9 +1,17 @@
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ItemsState, cancelEditItem } from '../items.state';
+import { ItemsState } from '../state/items.state';
 import { Store } from '@ngrx/store';
 import { Item, ItemType } from '../app.models';
 import { FormsModule } from '@angular/forms';
+import { cancelEditItem } from '../state/items.reducer';
+
+import { 
+  Component, 
+  EventEmitter, 
+  Input, 
+  Output, 
+  inject 
+} from '@angular/core';
 
 @Component({
   selector: 'app-noir-items-form',

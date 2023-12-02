@@ -1,30 +1,7 @@
-import { Item, ItemsViewType, PagerImpl } from "./app.models";
-import { getRandomUserName } from "./utils";
-
-import { 
-	createAction, 
-	createFeatureSelector, 
-	createReducer, 
-	createSelector, 
-	on, 
-	props 
-} from "@ngrx/store";
-
-export interface ItemsState {
-	pager: PagerImpl;
-	items: Array<Item>;
-	filter: string,
-	selectedItem?: Item;
-	view: ItemsViewType;
-}
-
-const initialState: ItemsState = {
-	pager: new PagerImpl(), 
-	items: new Array<Item>(),	
-	filter: '',
-	view: "list"
-} as const;
-
+import { createAction, createReducer, on, props } from "@ngrx/store";
+import { Item, ItemsViewType, PagerImpl } from "../app.models";
+import { getRandomUserName } from "../utils";
+import { getFilteredItems, initialState, setItemsF } from "./items.state";
 
 export const setItems = createAction('Set items', props<{ items: Item[] }>());
 export const nextPageClick = createAction('Next Page Click');
@@ -38,28 +15,6 @@ export const itemCreated = createAction('New Item Created', props<{ item: Item }
 export const itemUpdated = createAction('Item Updated', props<{ item: Item }>());
 export const setItemsView = createAction('Set Items View', props<{ view: ItemsViewType }>());
 
-
-function getFilteredItems(items: Item[], filter?: string): Item[] {
-	if(filter) {
-		const _filter = filter.toLowerCase();
-		return items.filter(i => i.name.toLowerCase().includes(_filter));
-	}
-	return items;
-}
-
-function setItemsF(state: ItemsState, items: Item[]): ItemsState {	
-	const filteredItems = getFilteredItems(items, state.filter);
-
-	return {
-		...state,
-		items: items,
-		pager: new PagerImpl({
-			totalRows: filteredItems.length,
-			rowsPerPage: state.pager.rowsPerPage,			
-			currentPage: state.pager.currentPage
-		})
-	}
-}
 
 export const reducer = createReducer(
 	initialState,
@@ -154,19 +109,3 @@ export const reducer = createReducer(
 		return { ...state, view }
 	})
 );
-
-const getItemsState = createFeatureSelector<ItemsState>("items2");
-
-export const itemsSelector = createSelector(getItemsState, s => {
-	const { currentPage, rowsPerPage } = s.pager;
-	const startFrom = currentPage > 0
-		 		? (currentPage - 1) * rowsPerPage
-		 		: 0;
-			
-	return getFilteredItems(s.items, s.filter)
-		.slice(startFrom, startFrom + rowsPerPage);
-});
-export const pagerSelector = createSelector(getItemsState, s => s.pager);
-export const selectedItemSelector = createSelector(getItemsState, s => s.selectedItem);
-export const filterSelector = createSelector(getItemsState, s => s.filter);
-export const itemsViewSelector = createSelector(getItemsState, s => s.view);

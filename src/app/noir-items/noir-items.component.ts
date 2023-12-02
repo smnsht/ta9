@@ -3,26 +3,30 @@ import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { Item, Pager, ItemsViewType } from '../app.models';
-import { ItemsService } from '../items.service';
+import { ItemsService } from '../service/items.service';
 import { PagerComponent } from '../pager/pager.component';
 import { NoirItemsFormComponent } from '../noir-items-form/noir-items-form.component';
+import { LoaderComponent } from '../loader.component';
+import { NoirItemsViewComponent } from '../noir-items-view/noir-items-view.component';
+import { ItemsState } from '../state/items.state';
+
 import { 
-  ItemsState, 
   addNewItem, 
-  filterSelector, 
   itemCreated, 
   itemUpdated, 
   nextPageClick, 
-  pagerSelector, 
   prevPageClick, 
-  selectedItemSelector, 
   setFilter, 
   setItems, 
   setItemsView, 
   setRowsPerPage 
-} from '../items.state';
-import { LoaderComponent } from '../loader.component';
-import { NoirItemsViewComponent } from '../noir-items-view/noir-items-view.component';
+} from '../state/items.reducer';
+
+import { 
+  filterSelector, 
+  pagerSelector, 
+  selectedItemSelector 
+} from '../state/items.selectors';
 
 
 @Component({

@@ -1,7 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { ApplicationConfig, InjectionToken } from '@angular/core';
 import { provideState, provideStore } from '@ngrx/store';
-import { reducer } from './items.state';
+import { reducer } from './state/items.reducer';
 
 export const BACKEND_URL = new InjectionToken<string>("backend url");
 
@@ -10,7 +10,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),    
     provideStore(),    
     provideState({
-      name: 'items2',
+      name: 'items',
       reducer: reducer
     }),
     { 
