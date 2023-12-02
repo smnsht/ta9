@@ -5,25 +5,24 @@ import { Store } from '@ngrx/store';
 import { Item, Pager, ItemsViewType } from '../app.models';
 import { ItemsService } from '../items.service';
 import { PagerComponent } from '../pager/pager.component';
-import { TruncatePipe } from '../truncate.pipe';
 import { NoirItemsFormComponent } from '../noir-items-form/noir-items-form.component';
 import { 
   ItemsState, 
   addNewItem, 
-  editItem, 
   filterSelector, 
   itemCreated, 
   itemUpdated, 
-  itemsSelector, 
   nextPageClick, 
   pagerSelector, 
   prevPageClick, 
   selectedItemSelector, 
   setFilter, 
   setItems, 
+  setItemsView, 
   setRowsPerPage 
 } from '../items.state';
 import { LoaderComponent } from '../loader.component';
+import { NoirItemsViewComponent } from '../noir-items-view/noir-items-view.component';
 
 
 @Component({
@@ -33,8 +32,8 @@ import { LoaderComponent } from '../loader.component';
     CommonModule, 
     LoaderComponent,     
     PagerComponent, 
+    NoirItemsViewComponent,
     NoirItemsFormComponent, 
-    TruncatePipe
   ],  
   templateUrl: './noir-items.component.html',
   styleUrl: './noir-items.component.css'
@@ -42,8 +41,7 @@ import { LoaderComponent } from '../loader.component';
 export class NoirItemsComponent implements OnInit {
   view: ItemsViewType = 'list';
   loading = false;
-
-  items$: Observable<Item[]>;
+  
   filter$: Observable<string>;
   pager$: Observable<Pager>;
   selectedItem$: Observable<Item | undefined>;
@@ -52,7 +50,6 @@ export class NoirItemsComponent implements OnInit {
     private itemsService: ItemsService,
     private store: Store<ItemsState>
   ) {
-    this.items$ = this.store.select(itemsSelector);    
     this.pager$ = this.store.select(pagerSelector);
     this.filter$ = this.store.select(filterSelector);
     this.selectedItem$ = this.store.select(selectedItemSelector)
@@ -91,16 +88,14 @@ export class NoirItemsComponent implements OnInit {
     this.store.dispatch(prevPageClick());
   }
 
-  doubleClick(item: Item): void {        
-    this.store.dispatch(editItem({ 
-      item, 
-      override: false 
-    }))    
-  }
-
   addNewClick(): void {
     this.store.dispatch(addNewItem());
   }
+
+  viewClick(view: ItemsViewType): void {
+    this.view = view;
+    this.store.dispatch(setItemsView({ view }));
+  }  
 
   saveItem(item: Item): void {    
     this.loading = true;

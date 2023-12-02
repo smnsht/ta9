@@ -1,6 +1,13 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Pager } from '../app.models';
+import { 
+  ChangeDetectionStrategy, 
+  Component, 
+  EventEmitter, 
+  Input, 
+  Output 
+} from '@angular/core';
+
 
 
 @Component({
@@ -37,6 +44,8 @@ export class PagerComponent {
 
   changed(event: Event) {
     const v = (<HTMLSelectElement>event.target).value;
-    this.rowsPerPageChanged.emit(Number.parseInt(v));    
+    const newValue = Number.parseInt(v);
+
+    this.rowsPerPageChanged.emit(newValue);    
   }    
 }

@@ -15,10 +15,7 @@ export interface Pager {
 	lastPage: number;
 }
 
-export type ItemEditDTO = Exclude<Item, 'id' | 'created_at' | 'updated_at' | 'created_by'>;
-
 export type ItemsViewType = 'list' | 'tiles';
-
 export type ItemType = Item | null | undefined;
 
 export class PagerImpl implements Pager {	

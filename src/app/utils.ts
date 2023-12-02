@@ -13,5 +13,6 @@ const DUMMY_USERS = [
 
 export function getRandomUserName(): string {
 	const rnd = Math.floor(Math.random() * 1000000);
+	
 	return DUMMY_USERS[rnd % DUMMY_USERS.length]
 }

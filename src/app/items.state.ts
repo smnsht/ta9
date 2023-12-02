@@ -1,4 +1,4 @@
-import { Item, PagerImpl } from "./app.models";
+import { Item, ItemsViewType, PagerImpl } from "./app.models";
 import { getRandomUserName } from "./utils";
 
 import { 
@@ -15,12 +15,14 @@ export interface ItemsState {
 	items: Array<Item>;
 	filter: string,
 	selectedItem?: Item;
+	view: ItemsViewType;
 }
 
 const initialState: ItemsState = {
 	pager: new PagerImpl(), 
 	items: new Array<Item>(),	
-	filter: ''
+	filter: '',
+	view: "list"
 } as const;
 
 
@@ -34,6 +36,7 @@ export const addNewItem = createAction('Add New Item');
 export const cancelEditItem = createAction('Cancel Edit Item');
 export const itemCreated = createAction('New Item Created', props<{ item: Item }>());
 export const itemUpdated = createAction('Item Updated', props<{ item: Item }>());
+export const setItemsView = createAction('Set Items View', props<{ view: ItemsViewType }>());
 
 
 function getFilteredItems(items: Item[], filter?: string): Item[] {
@@ -146,6 +149,9 @@ export const reducer = createReducer(
 		newItems[index] = item;
 
 		return setItemsF(state, newItems);
+	}),	
+	on(setItemsView, (state, { view }) => {
+		return { ...state, view }
 	})
 );
 
@@ -163,3 +169,4 @@ export const itemsSelector = createSelector(getItemsState, s => {
 export const pagerSelector = createSelector(getItemsState, s => s.pager);
 export const selectedItemSelector = createSelector(getItemsState, s => s.selectedItem);
 export const filterSelector = createSelector(getItemsState, s => s.filter);
+export const itemsViewSelector = createSelector(getItemsState, s => s.view);

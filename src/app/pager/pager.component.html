@@ -11,7 +11,19 @@
 
 	&nbsp;
 
-	<button (click)="prevClick()" [disabled]="!pager || 1 == pager.currentPage">&lt;&lt;Prev</button>
+	<button 
+		(click)="prevClick()" 
+		[disabled]="!pager || 1 == pager.currentPage"
+	>
+		&lt;&lt;Prev
+	</button>
+
 	Page: <b>{{ pager?.currentPage }}</b> of {{ pager?.lastPage }}
-	<button (click)="nextClick()" [disabled]="!pager || pager.currentPage == pager.lastPage">Next &gt;&gt;</button>
+
+	<button 
+		(click)="nextClick()" 
+		[disabled]="!pager || pager.currentPage == pager.lastPage"
+	>
+		Next &gt;&gt;
+	</button>
 </div>

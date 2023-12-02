@@ -1,0 +1,33 @@
+<table *ngIf="(view$ | async) == 'list'">
+	<thead>
+		<tr>
+			<th>Color</th>
+			<th>Name</th>
+			<th>Create Date</th>
+			<th>Last Update</th>
+			<th>Created By</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr *ngFor="let item of items$ | async;" (dblclick)="doubleClick(item)">
+			<td>
+				<div class="color-button" [ngStyle]="{'background-color': item.color}">&nbsp;</div>
+			</td>
+			<td>{{item.name}}</td>
+			<td>{{item.created_at | date: 'shortDate'}}</td>
+			<td>{{item.updated_at | date: 'shortDate'}}</td>
+			<td>{{item.created_by}}</td>
+		</tr>
+	</tbody>
+</table>
+
+<div class="grid-container" *ngIf="(view$ | async) == 'tiles'">
+	<div class="grid-item" *ngFor="let item of items$ | async">
+		<div class="color-button" 
+			[ngStyle]="{'background-color': item.color}" 
+			(dblclick)="doubleClick(item)">
+			&nbsp;
+		</div>				
+		<div>{{item.name | truncate:10}}</div>
+	</div>
+</div>

@@ -11,5 +11,4 @@ export class TruncatePipe implements PipeTransform {
       ? value 
       : value.substring(0, len-3) + '...';
   }
-
 }
