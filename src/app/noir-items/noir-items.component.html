@@ -10,7 +10,7 @@
 			<button (click)="view = 'tiles'" [ngClass]="{ 'selected': 'tiles' == view }">
 				Tail View
 			</button>
-			<button (click)="addNewClick()" [disabled]="selectedItem$ | async">
+			<button (click)="addNewClick()" [disabled]="loading || (selectedItem$ | async)">
 				Add New
 			</button>
 		</span>
@@ -19,7 +19,9 @@
 	<input type="text" placeholder="Find by name..." (input)="filterInput($event)" [value]="filter$ | async" />
 </header>
 
-<div class="content">
+<div class="content">	
+	<app-loader *ngIf="loading"></app-loader>
+
 	<app-noir-items-form 
 		[item]="selectedItem$ | async" 
 		(saveClicked)="saveItem($event)"
@@ -61,8 +63,9 @@
 	</div>	
 </div>
 
-<footer>    
-	<app-pager 
+<footer> 	
+	<app-pager
+		*ngIf="!loading" 
 		[pager]="pager$ | async" 
 		[options]="[4, 5, 10, 20]" 
 		(nextPageClick)="nextPageClick()"

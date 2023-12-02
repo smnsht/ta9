@@ -21,6 +21,7 @@ import {
   setItems, 
   setRowsPerPage 
 } from '../items.state';
+import { LoaderComponent } from '../loader.component';
 
 
 type ViewType = 'list' | 'tiles';
@@ -28,13 +29,14 @@ type ViewType = 'list' | 'tiles';
 @Component({
   selector: 'app-noir-items',
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, PagerComponent, NoirItemsFormComponent, TruncatePipe],
+  //changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CommonModule, LoaderComponent, PagerComponent, NoirItemsFormComponent, TruncatePipe],
   templateUrl: './noir-items.component.html',
   styleUrl: './noir-items.component.css'
 })
 export class NoirItemsComponent implements OnInit {
   view: ViewType = 'list';
+  loading = false;
 
   items$: Observable<Item[]>;
   filter$: Observable<string>;
@@ -52,8 +54,17 @@ export class NoirItemsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.itemsService.get().subscribe(items => {
-      this.store.dispatch(setItems({ items }));
+    this.loading = true;
+    // this.store.dispatch(setItems({ items }));
+    this.itemsService.get().subscribe({
+      next: items => { 
+        this.store.dispatch(setItems({ items }));
+        this.loading = false;
+      },
+      error: err => {
+        console.log(err);
+        this.loading = false;
+      }
     });
   }
 
@@ -89,5 +100,6 @@ export class NoirItemsComponent implements OnInit {
 
   saveItem(item: Item): void {
     console.log(item);
+    this.loading = true;
   }
 }
