@@ -2,10 +2,8 @@ import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ItemsState, cancelEditItem } from '../items.state';
 import { Store } from '@ngrx/store';
-import { Item } from '../app.models';
+import { Item, ItemType } from '../app.models';
 import { FormsModule } from '@angular/forms';
-
-type ItemType = Item | null | undefined;
 
 @Component({
   selector: 'app-noir-items-form',

@@ -9,7 +9,8 @@ import { NoirItemsComponent } from './noir-items/noir-items.component';
   <main class="main">
     <app-noir-items></app-noir-items>
   </main>
-  `
+  `,
+  styles: ['main { padding: 1em; }']
 })
 export class AppComponent {
 

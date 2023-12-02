@@ -1,5 +1,14 @@
-import { createAction, createFeatureSelector, createReducer, createSelector, on, props } from "@ngrx/store";
 import { Item, PagerImpl } from "./app.models";
+import { getRandomUserName } from "./utils";
+
+import { 
+	createAction, 
+	createFeatureSelector, 
+	createReducer, 
+	createSelector, 
+	on, 
+	props 
+} from "@ngrx/store";
 
 export interface ItemsState {
 	pager: PagerImpl;
@@ -20,24 +29,38 @@ export const nextPageClick = createAction('Next Page Click');
 export const prevPageClick = createAction('Prev Page Click');
 export const setRowsPerPage = createAction('Set Rows per Page', props<{ rowsPerPage: number }>());
 export const setFilter = createAction('Set filter', props<{ filter: string }>());
-
 export const editItem = createAction('Edit Item', props<{ item: Item, override: boolean }>());
 export const addNewItem = createAction('Add New Item');
 export const cancelEditItem = createAction('Cancel Edit Item');
+export const itemCreated = createAction('New Item Created', props<{ item: Item }>());
+export const itemUpdated = createAction('Item Updated', props<{ item: Item }>());
+
+
+function getFilteredItems(items: Item[], filter?: string): Item[] {
+	if(filter) {
+		const _filter = filter.toLowerCase();
+		return items.filter(i => i.name.toLowerCase().includes(_filter));
+	}
+	return items;
+}
+
+function setItemsF(state: ItemsState, items: Item[]): ItemsState {	
+	const filteredItems = getFilteredItems(items, state.filter);
+
+	return {
+		...state,
+		items: items,
+		pager: new PagerImpl({
+			totalRows: filteredItems.length,
+			rowsPerPage: state.pager.rowsPerPage,			
+			currentPage: state.pager.currentPage
+		})
+	}
+}
 
 export const reducer = createReducer(
 	initialState,
-	on(setItems, (state, { items }) => {		
-		return {
-			...state,
-			items: items,
-			pager: new PagerImpl({
-				totalRows: <number>items.length,
-				rowsPerPage: state.pager.rowsPerPage,			
-				currentPage: state.pager.currentPage
-			})
-		}
-	}),
+	on(setItems, (state, { items }) => setItemsF(state, items)),	
 	on(nextPageClick, (state) => {		
 		return {
 			...state,
@@ -68,10 +91,17 @@ export const reducer = createReducer(
 			})
 		}
 	}),
-	on(setFilter, (state, { filter }) => {
+	on(setFilter, (state, { filter }) => {				
+		const filteredItems = getFilteredItems(state.items, filter);
+		
 		return {
 			...state,
-			filter
+			filter,
+			pager: new PagerImpl({
+				totalRows: filteredItems.length,				
+				currentPage: state.pager.currentPage,
+				rowsPerPage: state.pager.rowsPerPage
+			})
 		}
 	}),
 	on(editItem, (state, { item, override }) => {
@@ -94,7 +124,7 @@ export const reducer = createReducer(
 				color: '#000000',
 				created_at: new Date(),
 				updated_at: new Date(),
-				created_by: 'me'
+				created_by: getRandomUserName()
 			}
 		}
 	}),
@@ -103,24 +133,33 @@ export const reducer = createReducer(
 			...state,
 			selectedItem: undefined
 		}
+	}),
+	on(itemCreated, (state, { item }) => setItemsF(state, [...state.items, item])),	
+	on(itemUpdated, (state, { item }) => {		
+		const index = state.items.findIndex((i) => i.id == item.id);
+		
+		if(index < 0) throw new Error("can't find updated item by id!");
+		
+		let newItems = [...state.items];
+
+		// replace item where it was
+		newItems[index] = item;
+
+		return setItemsF(state, newItems);
 	})
 );
 
-const getItemsState2 = createFeatureSelector<ItemsState>("items2");
+const getItemsState = createFeatureSelector<ItemsState>("items2");
 
-export const itemsSelector2 = createSelector(getItemsState2, s => {
+export const itemsSelector = createSelector(getItemsState, s => {
 	const { currentPage, rowsPerPage } = s.pager;
 	const startFrom = currentPage > 0
 		 		? (currentPage - 1) * rowsPerPage
 		 		: 0;
-		
-	if(s.filter) {
-		const _filter = s.filter!.toLowerCase();
-		return s.items.filter(i => i.name.toLowerCase().includes(_filter)).slice(startFrom, rowsPerPage);
-	}
-				
-	return s.items.slice(startFrom, startFrom + rowsPerPage);
+			
+	return getFilteredItems(s.items, s.filter)
+		.slice(startFrom, startFrom + rowsPerPage);
 });
-export const pagerSelector = createSelector(getItemsState2, s => s.pager);
-export const selectedItemSelector = createSelector(getItemsState2, s => s.selectedItem);
-export const filterSelector = createSelector(getItemsState2, s => s.filter);
+export const pagerSelector = createSelector(getItemsState, s => s.pager);
+export const selectedItemSelector = createSelector(getItemsState, s => s.selectedItem);
+export const filterSelector = createSelector(getItemsState, s => s.filter);

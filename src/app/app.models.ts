@@ -7,7 +7,6 @@ export interface Item {
 	created_by: string;
 }
 
-export type ItemEditDTO = Exclude<Item, 'created_at' | 'created_at' | 'created_by'>;
 
 export interface Pager {
 	totalRows: number;
@@ -15,6 +14,12 @@ export interface Pager {
 	currentPage: number;
 	lastPage: number;
 }
+
+export type ItemEditDTO = Exclude<Item, 'id' | 'created_at' | 'updated_at' | 'created_by'>;
+
+export type ItemsViewType = 'list' | 'tiles';
+
+export type ItemType = Item | null | undefined;
 
 export class PagerImpl implements Pager {	
 	private _totalRows = 0;
