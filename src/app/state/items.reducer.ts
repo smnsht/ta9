@@ -1,7 +1,7 @@
 import { createAction, createReducer, on, props } from "@ngrx/store";
 import { Item, ItemsViewType, PagerImpl } from "../app.models";
 import { getRandomUserName } from "../utils";
-import { getFilteredItems, initialState, setItemsF } from "./items.state";
+import { initialState, cloneFilterAware } from "./items.state";
 
 export const setItems = createAction('Set items', props<{ items: Item[] }>());
 export const nextPageClick = createAction('Next Page Click');
@@ -18,7 +18,9 @@ export const setItemsView = createAction('Set Items View', props<{ view: ItemsVi
 
 export const reducer = createReducer(
 	initialState,
-	on(setItems, (state, { items }) => setItemsF(state, items)),	
+	on(setItems, (state, { items }) => cloneFilterAware(state, items)),	
+	on(setFilter, (state, { filter }) => cloneFilterAware({ ...state, filter }, state.items)),	
+	on(itemCreated, (state, { item }) => cloneFilterAware(state, [...state.items, item])),	
 	on(nextPageClick, (state) => {		
 		return {
 			...state,
@@ -49,29 +51,14 @@ export const reducer = createReducer(
 			})
 		}
 	}),
-	on(setFilter, (state, { filter }) => {				
-		const filteredItems = getFilteredItems(state.items, filter);
-		
-		return {
-			...state,
-			filter,
-			pager: new PagerImpl({
-				totalRows: filteredItems.length,				
-				currentPage: state.pager.currentPage,
-				rowsPerPage: state.pager.rowsPerPage
-			})
-		}
-	}),
+	
 	on(editItem, (state, { item, override }) => {
 		// if any item already selected and flag 'override' not set, the state not altered
 		if(!override && state.selectedItem) {
-			return state;
+			return { ...state };
 		}
 
-		return {
-			...state,
-			selectedItem: item
-		}
+		return { ...state, selectedItem: item }
 	}),
 	on(addNewItem, (state) => {
 		return {
@@ -91,19 +78,20 @@ export const reducer = createReducer(
 			...state,
 			selectedItem: undefined
 		}
-	}),
-	on(itemCreated, (state, { item }) => setItemsF(state, [...state.items, item])),	
+	}),	
 	on(itemUpdated, (state, { item }) => {		
 		const index = state.items.findIndex((i) => i.id == item.id);
 		
-		if(index < 0) throw new Error("can't find updated item by id!");
+		if(index < 0) {
+			throw new Error("can't find updated item by id!");
+		} 
 		
 		let newItems = [...state.items];
 
 		// replace item where it was
 		newItems[index] = item;
-
-		return setItemsF(state, newItems);
+		
+		return { ...state, items: newItems }
 	}),	
 	on(setItemsView, (state, { view }) => {
 		return { ...state, view }

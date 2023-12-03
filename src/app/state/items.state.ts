@@ -3,7 +3,7 @@ import { Item, ItemsViewType, PagerImpl } from "../app.models";
 export interface ItemsState {
 	pager: PagerImpl;
 	items: Array<Item>;
-	filter: string,
+	filter: string;
 	selectedItem?: Item;
 	view: ItemsViewType;
 }
@@ -15,8 +15,6 @@ export const initialState: ItemsState = {
 	view: "list"
 } as const;
 
-
-
 export function getFilteredItems(items: Item[], filter?: string): Item[] {
 	if(filter) {
 		const _filter = filter.toLowerCase();
@@ -25,7 +23,7 @@ export function getFilteredItems(items: Item[], filter?: string): Item[] {
 	return items;
 }
 
-export function setItemsF(state: ItemsState, items: Item[]): ItemsState {	
+export function cloneFilterAware(state: ItemsState, items: Item[]): ItemsState {	
 	const filteredItems = getFilteredItems(items, state.filter);
 
 	return {
