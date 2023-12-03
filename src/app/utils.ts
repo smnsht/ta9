@@ -1,3 +1,7 @@
+export interface Configuration {
+	backendUrl: string;
+};
+
 const DUMMY_USERS = [
 	'Ori Lugasy',
 	'Ran Shim',

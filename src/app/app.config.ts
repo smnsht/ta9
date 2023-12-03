@@ -2,6 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { ApplicationConfig, InjectionToken } from '@angular/core';
 import { provideState, provideStore } from '@ngrx/store';
 import { reducer } from './state/items.reducer';
+import { environment } from '../environments/environment';
 
 export const BACKEND_URL = new InjectionToken<string>("backend url");
 
@@ -15,7 +16,7 @@ export const appConfig: ApplicationConfig = {
     }),
     { 
       provide: BACKEND_URL, 
-      useValue: 'http://localhost:3000' // TODO
+      useValue: environment.backendUrl
     },  
   ]
 };
