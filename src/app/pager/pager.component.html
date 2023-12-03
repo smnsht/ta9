@@ -1,11 +1,11 @@
 <div class="pager">
-	<label>Total items: <b>{{ pager?.totalRows }}</b></label>
-	<label>Items per page: <b>{{ pager?.rowsPerPage }}</b></label>
+	<span>Total items: <b>{{ pager?.totalRows }}</b></span>
+	<span>Items per page: <b>{{ pager?.rowsPerPage }}</b></span>
 
 	<select (change)="changed($event)">
 		<option *ngFor="let v of options" 
 			[value]="v" 
-			[selected]="pager?.rowsPerPage == v">{{ v }}
+			[selected]="pager?.rowsPerPage === v">{{ v }}
 		</option>
 	</select>
 
@@ -13,7 +13,7 @@
 
 	<button 
 		(click)="prevClick()" 
-		[disabled]="!pager || 1 == pager.currentPage"
+		[disabled]="!pager || 1 === pager.currentPage"
 	>
 		&lt;&lt;Prev
 	</button>
@@ -22,7 +22,7 @@
 
 	<button 
 		(click)="nextClick()" 
-		[disabled]="!pager || pager.currentPage == pager.lastPage"
+		[disabled]="!pager || pager.currentPage === pager.lastPage"
 	>
 		Next &gt;&gt;
 	</button>

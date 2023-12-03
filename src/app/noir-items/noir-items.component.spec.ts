@@ -26,15 +26,15 @@ describe('NoirItemsComponent', () => {
 
   let component: NoirItemsComponent;
 
-  let mockStore = {
+  const mockStore = {
     select: () => { },
-    dispatch: (val: any) => { }
+    dispatch: (a: any) => { a }
   };
 
-  let mockItemsService = {
+  const mockItemsService = {
     get: () => of(items),
-    update:(item: any) => of(items[0]),
-    create:(item: any) => of(items[0])
+    update:(a: any) => { a; return of(items[0]); },
+    create:(a: any) => { a; return of(items[0]) }
   };
 
   beforeEach(async () => {
@@ -90,7 +90,7 @@ describe('NoirItemsComponent', () => {
   });
 
   it('saveItem() dispatched to updateUtem()', () => {
-    let itemToUpdate = { ...items[0] };
+    const itemToUpdate = { ...items[0] };
 
     spyOn(mockItemsService, 'update').and.callFake((item) => {
       expect(component.loading).toBeTrue();
@@ -106,7 +106,7 @@ describe('NoirItemsComponent', () => {
   });
 
   it('saveItem() dispatched to createUtem()', () => {
-    let itemToCreate = { ...items[0], id: '' };
+    const itemToCreate = { ...items[0], id: '' };
 
     spyOn(mockItemsService, 'create').and.callFake(item => {      
       expect(component.loading).toBeTrue();

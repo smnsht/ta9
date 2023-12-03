@@ -24,7 +24,7 @@ const items: Item[] = [
 
 describe('NoirItemsViewComponent', () => {
   let component: NoirItemsViewComponent;  
-  let mockStore = {
+  const mockStore = {
     select: () => {},
     dispatch: () => {}
   };

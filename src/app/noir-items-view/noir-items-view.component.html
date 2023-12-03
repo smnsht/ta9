@@ -1,4 +1,4 @@
-<table *ngIf="(view$ | async) == 'list'">
+<table *ngIf="(view$ | async) === 'list'">
 	<thead>
 		<tr>
 			<th>Color</th>
@@ -21,7 +21,7 @@
 	</tbody>
 </table>
 
-<div class="grid-container" *ngIf="(view$ | async) == 'tiles'">	
+<div class="grid-container" *ngIf="(view$ | async) === 'tiles'">	
 	<div class="grid-item" *ngFor="let item of items$ | async">
 		<div class="color-button" 
 			[ngStyle]="{'background-color': item.color}" 

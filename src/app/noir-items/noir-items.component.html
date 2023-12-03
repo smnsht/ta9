@@ -4,10 +4,10 @@
 			<h3>Management Tool</h3>
 		</span>
 		<span class="col-right">
-			<button (click)="viewClick('list')" [ngClass]="{ 'selected': 'list' == view }">
+			<button (click)="viewClick('list')" [ngClass]="{ 'selected': 'list' === view }">
 				List View
 			</button>
-			<button (click)="viewClick('tiles')" [ngClass]="{ 'selected': 'tiles' == view }">
+			<button (click)="viewClick('tiles')" [ngClass]="{ 'selected': 'tiles' === view }">
 				Tail View
 			</button>
 			<button (click)="addNewClick()" [disabled]="loading || (selectedItem$ | async)">

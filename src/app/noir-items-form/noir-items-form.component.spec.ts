@@ -16,7 +16,7 @@ describe('NoirItemsFormComponent', () => {
   let component: NoirItemsFormComponent;
   let mockStore = {
     select: () => {},
-    dispatch: (val: any) => {}
+    dispatch: (action: any) => { action }
   };
 
   beforeEach(() => {

@@ -86,7 +86,7 @@ export const reducer = createReducer(
 			throw new Error("can't find updated item by id!");
 		} 
 		
-		let newItems = [...state.items];
+		const newItems = [...state.items];
 
 		// replace item where it was
 		newItems[index] = item;
