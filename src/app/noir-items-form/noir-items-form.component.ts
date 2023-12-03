@@ -9,8 +9,7 @@ import {
   Component, 
   EventEmitter, 
   Input, 
-  Output, 
-  inject 
+  Output
 } from '@angular/core';
 
 @Component({
@@ -40,7 +39,7 @@ export class NoirItemsFormComponent {
     return this.itemClone;
   }
 
-  private store = inject(Store<ItemsState>);
+  constructor(private store: Store<ItemsState>){}  
   
   closeClick(): void {    
     this.store.dispatch(cancelEditItem());
