@@ -21,7 +21,7 @@
 	</tbody>
 </table>
 
-<div class="grid-container" *ngIf="(view$ | async) == 'tiles'">
+<div class="grid-container" *ngIf="(view$ | async) == 'tiles'">	
 	<div class="grid-item" *ngFor="let item of items$ | async">
 		<div class="color-button" 
 			[ngStyle]="{'background-color': item.color}" 
@@ -29,5 +29,9 @@
 			&nbsp;
 		</div>				
 		<div>{{item.name | truncate:10}}</div>
-	</div>
+	</div>	
 </div>
+
+<p *ngIf="(items$ | async)?.length">	
+	<i>Double click on row/cell to edit item</i>
+</p>
