@@ -6,13 +6,17 @@ export interface ItemsState {
 	filter: string;
 	selectedItem?: Item;
 	view: ItemsViewType;
+	loading: boolean;
+	error: string;
 }
 
 export const initialState: ItemsState = {
 	pager: new PagerImpl(), 
 	items: new Array<Item>(),	
 	filter: '',
-	view: "list"
+	view: "list",
+	loading: false,
+	error: ''
 } as const;
 
 export function getFilteredItems(items: Item[], filter?: string): Item[] {
@@ -29,6 +33,8 @@ export function cloneFilterAware(state: ItemsState, items: Item[]): ItemsState {
 	return {
 		...state,
 		items: items,
+		loading: false,
+		error: '',
 		pager: new PagerImpl({
 			totalRows: filteredItems.length,
 			rowsPerPage: state.pager.rowsPerPage,			

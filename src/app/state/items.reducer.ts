@@ -14,13 +14,24 @@ export const cancelEditItem = createAction('Cancel Edit Item');
 export const itemCreated = createAction('New Item Created', props<{ item: Item }>());
 export const itemUpdated = createAction('Item Updated', props<{ item: Item }>());
 export const setItemsView = createAction('Set Items View', props<{ view: ItemsViewType }>());
-
+export const loadItemsRequest = createAction('[Items API] Load Items Request');
+export const loadItemsError = createAction('[Items API] Load Items Error', props<{ error: string }>());
+export const postItem = createAction('[Items API] Save New Item', props<{ item: Item }>());
+export const putItem = createAction('[Items API] Update Item', props<{ item: Item }>());
+export const saveItemError = createAction('[Items API] Save Error', props<{ error: string }>());
 
 export const reducer = createReducer(
-	initialState,
+	initialState,	
 	on(setItems, (state, { items }) => cloneFilterAware(state, items)),	
 	on(setFilter, (state, { filter }) => cloneFilterAware({ ...state, filter }, state.items)),	
 	on(itemCreated, (state, { item }) => cloneFilterAware(state, [...state.items, item])),	
+	on(loadItemsRequest, (state) => {
+		return {
+			...state,
+			error: '',
+			loading: true
+		}
+	}),
 	on(nextPageClick, (state) => {		
 		return {
 			...state,
@@ -80,6 +91,8 @@ export const reducer = createReducer(
 	on(itemUpdated, (state, { item }) => {				
 		return { 
 			...state, 
+			loading: false,
+			error: '',
 			// replace item at index where it was
 			items: state.items.map(i => item.id === i.id ? item : i)			
 		}
@@ -89,5 +102,19 @@ export const reducer = createReducer(
 			...state, 
 			view 
 		}
-	})
+	}),
+	on(postItem, putItem, (state) => {
+		return {
+			...state,
+			error: '',
+			loading: true
+		}
+	}),
+	on(loadItemsError, saveItemError, (state, { error }) => {
+		return {
+			...state,			
+			loading: false,
+			error
+		}
+	})	
 );

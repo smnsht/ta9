@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { Item, Pager, ItemsViewType } from '../app.models';
-import { ItemsService } from '../service/items.service';
 import { PagerComponent } from '../pager/pager.component';
 import { NoirItemsFormComponent } from '../noir-items-form/noir-items-form.component';
 import { LoaderComponent } from '../loader.component';
@@ -13,10 +12,13 @@ import * as ItemActions from '../state/items.reducer';
 
 import {
   filterSelector,
+  itemsErrorSelector,
+  itemsLoadingSelector,
   itemsSelector,
   pagerSelector,
   selectedItemSelector
 } from '../state/items.selectors';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-noir-items',
@@ -27,46 +29,39 @@ import {
     PagerComponent,
     NoirItemsViewComponent,
     NoirItemsFormComponent,
+    FormsModule
   ],
   templateUrl: './noir-items.component.html',
   styleUrl: './noir-items.component.css'
 })
 export class NoirItemsComponent implements OnInit {
   view: ItemsViewType = 'list';
-  loading = false;
+  filterModel = '';
 
   items$: Observable<Item[]>;
   filter$: Observable<string>;
   pager$: Observable<Pager>;
+  loading$: Observable<boolean>;
+  error$: Observable<string>;
   selectedItem$: Observable<Item | undefined>;
 
-  constructor(
-    private itemsService: ItemsService,
-    private store: Store<ItemsState>
-  ) {
+  constructor(private store: Store<ItemsState>) {
     this.items$ = this.store.select(itemsSelector)
     this.pager$ = this.store.select(pagerSelector);
     this.filter$ = this.store.select(filterSelector);
+    this.loading$ = this.store.select(itemsLoadingSelector);
+    this.error$ = this.store.select(itemsErrorSelector);
     this.selectedItem$ = this.store.select(selectedItemSelector)
   }
 
-  ngOnInit(): void {
-    this.loading = true;
-
-    this.itemsService.get().subscribe({
-      next: items => {
-        this.store.dispatch(ItemActions.setItems({ items }));
-        this.loading = false;
-      },
-      error: this.itemsServiceError
-    });
+  ngOnInit(): void {    
+    this.store.dispatch(ItemActions.loadItemsRequest());
   }
 
-  filterInput(event: Event) {
-    const input: HTMLInputElement = <HTMLInputElement>event.target;
-    const action = ItemActions.setFilter({ filter: input.value });
-
-    this.store.dispatch(action);
+  filterInput() {
+    this.store.dispatch(ItemActions.setFilter({
+      filter: this.filterModel
+    }));
   }
 
   rowsPerPageChanged(val: number): void {
@@ -101,44 +96,10 @@ export class NoirItemsComponent implements OnInit {
   }
 
   saveItem(item: Item): void {
-    this.loading = true;
-
     if (item.id) {
-      this.updateItem(item);
+      this.store.dispatch(ItemActions.putItem({ item }));
     } else {
-      this.createItem(item);
+      this.store.dispatch(ItemActions.postItem({ item }));
     }
-  }
-
-  private itemsServiceError(err: any): void {
-    console.error(err);
-    this.loading = false;
-    alert('Error! View console log for details');
-  }
-
-  private updateItem(item: Item) {
-    this.itemsService
-      .update(item)
-      .subscribe({
-        next: (item) => {
-          this.store.dispatch(ItemActions.itemUpdated({ item }));
-          this.loading = false;
-          alert('Item successfully updated!');
-        },
-        error: this.itemsServiceError
-      });
-  }
-
-  private createItem(item: Item) {
-    this.itemsService
-      .create(item)
-      .subscribe({
-        next: item => {
-          this.store.dispatch(ItemActions.itemCreated({ item }));
-          this.loading = false;
-          alert('Item successfully created!');
-        },
-        error: this.itemsServiceError
-      });
   }
 }

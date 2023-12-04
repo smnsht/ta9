@@ -16,3 +16,5 @@ export const pagerSelector = createSelector(getItemsState, s => s.pager);
 export const selectedItemSelector = createSelector(getItemsState, s => s.selectedItem);
 export const filterSelector = createSelector(getItemsState, s => s.filter);
 export const itemsViewSelector = createSelector(getItemsState, s => s.view);
+export const itemsLoadingSelector = createSelector(getItemsState, s => s.loading);
+export const itemsErrorSelector = createSelector(getItemsState, s => s.error);

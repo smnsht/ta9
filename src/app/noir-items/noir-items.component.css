@@ -36,6 +36,14 @@ header input {
 	border-style: dashed;
 }
 
+div.server-error {
+	border: 1px solid black;
+	color: red;
+	margin: 1em;
+	padding: 1em;
+	font-weight: bold;
+}
+
 footer {	
 	bottom: 0;
 	width: 100%;

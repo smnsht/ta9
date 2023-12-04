@@ -1,5 +1,4 @@
 import { NoirItemsComponent } from './noir-items.component';
-import { of } from 'rxjs';
 import { Item, ItemsViewType } from '../app.models';
 
 describe('NoirItemsComponent', () => {
@@ -31,28 +30,23 @@ describe('NoirItemsComponent', () => {
     dispatch: (a: any) => { a }
   };
 
-  const mockItemsService = {
-    get: () => of(items),
-    update:(a: any) => { a; return of(items[0]); },
-    create:(a: any) => { a; return of(items[0]) }
-  };
-
   beforeEach(async () => {
-    component = new NoirItemsComponent(mockItemsService as any, mockStore as any);
+    component = new NoirItemsComponent(mockStore as any);
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('ngOnInit() should load items', () => {
-    spyOn(mockItemsService, 'get').and.returnValue(of(items));
+  it('ngOnInit() dispatches to loadItemsRequest()', () => {
+    spyOn(mockStore, 'dispatch').and.callFake(action => {
+      expect(action.type).toBe('[Items API] Load Items Request');
+    });
 
-    component.ngOnInit();
-    expect(mockItemsService.get).toHaveBeenCalled();
+    component.ngOnInit();    
   });
 
-  it('nextPageClick() dispatches nextPgeClick()', () => {
+  it('nextPageClick() dispatches to nextPageClick()', () => {
     spyOn(mockStore, 'dispatch').and.callFake(action => {
       expect(action.type).toBe('Next Page Click');
     });
@@ -60,7 +54,7 @@ describe('NoirItemsComponent', () => {
     component.nextPageClick();
   });
 
-  it('prevPageClick() dispatches prevPgeClick()', () => {
+  it('prevPageClick() dispatches prevPageClick()', () => {
     spyOn(mockStore, 'dispatch').and.callFake(action => {
       expect(action.type).toBe('Prev Page Click');
     });
@@ -68,7 +62,7 @@ describe('NoirItemsComponent', () => {
     component.prevPageClick();
   });
 
-  it('addNewClick() dispatches addNewItem()', () => {
+  it('addNewClick() dispatches to addNewItem()', () => {
     spyOn(mockStore, 'dispatch').and.callFake(action => {
       expect(action.type).toBe('Add New Item');
     });
@@ -76,7 +70,7 @@ describe('NoirItemsComponent', () => {
     component.addNewClick();
   });
 
-  it('viewClick() dispatches setItemsView() action', () => {
+  it('viewClick() dispatches to setItemsView()', () => {
     spyOn(mockStore, 'dispatch').and.callFake(action => {
       expect(action).toEqual({
         view: 'tiles',
@@ -88,34 +82,23 @@ describe('NoirItemsComponent', () => {
 
     expect(component.view).toEqual(<ItemsViewType>"tiles");
   });
-
-  it('saveItem() dispatched to updateUtem()', () => {
+  
+  it('saveItem() dispatched to putItem() when id is set', () => {
     const itemToUpdate = { ...items[0] };
-
-    spyOn(mockItemsService, 'update').and.callFake((item) => {
-      expect(component.loading).toBeTrue();
-      expect(item).toEqual(itemToUpdate);      
-      return of(item);
-    });
+    itemToUpdate.id = crypto.randomUUID();
 
     spyOn(mockStore, 'dispatch').and.callFake(action => {      
-      expect(action.type).toEqual('Item Updated');
+      expect(action.type).toEqual('[Items API] Update Item');
     });
     
     component.saveItem(itemToUpdate);    
   });
 
-  it('saveItem() dispatched to createUtem()', () => {
+  it('saveItem() dispatched to postItem() when is is empty', () => {
     const itemToCreate = { ...items[0], id: '' };
-
-    spyOn(mockItemsService, 'create').and.callFake(item => {      
-      expect(component.loading).toBeTrue();
-      expect(item).toEqual(itemToCreate);
-      return of({ ...item, id: '11111' });
-    });
-
+    
     spyOn(mockStore, 'dispatch').and.callFake(action => {            
-      expect(action.type).toEqual('New Item Created');      
+      expect(action.type).toEqual('[Items API] Save New Item');      
     });
     
     component.saveItem(itemToCreate);
