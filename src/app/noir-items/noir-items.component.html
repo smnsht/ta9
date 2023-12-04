@@ -33,7 +33,12 @@
 	>
 	</app-noir-items-form>
 	
-	<app-noir-items-view></app-noir-items-view>
+	<app-noir-items-view 
+		[items]="items$ | async"
+		[view]="view"
+		(itemSelected)="itemSelected($event)"
+	>
+	</app-noir-items-view>
 </div>
 
 <footer> 	

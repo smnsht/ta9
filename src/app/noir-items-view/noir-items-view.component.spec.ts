@@ -1,6 +1,4 @@
-
 import { NoirItemsViewComponent } from './noir-items-view.component';
-import { of } from 'rxjs';
 import { Item } from '../app.models';
 
 const items: Item[] = [
@@ -24,31 +22,24 @@ const items: Item[] = [
 
 describe('NoirItemsViewComponent', () => {
   let component: NoirItemsViewComponent;  
-  const mockStore = {
-    select: () => {},
-    dispatch: () => {}
-  };
   
   beforeEach(() => {  
-    component = new NoirItemsViewComponent(mockStore as any);
-    component.items$ = of(items);
-    component.view$ = of("list");      
+    component = new NoirItemsViewComponent();
+    component.items = items;
+    component.view = "list";
   });
 
   it('component created', () => {    
     expect(component).toBeTruthy();   
-    expect(component.items$).toBeTruthy();        
-    expect(component.view$).toBeTruthy();
-    
-    component.items$.subscribe(i => expect(i).toEqual(items));    
-    component.view$.subscribe(v => expect(v).toBe("list") );    
+    expect(component.items).toEqual(items);   
+    expect(component.view).toBe("list");    
   });
 
-  it('doubleClick() dispatches editAction', () => {
-    spyOn(mockStore, 'dispatch');
-    
-    component.doubleClick(items[0]);
+  it('doubleClick() raises itemSelected', () => {    
+    const selectedItem = items[0];
 
-    expect(mockStore.dispatch).toHaveBeenCalled();
+    component.itemSelected.subscribe(item => expect(item).toEqual(selectedItem));
+    
+    component.doubleClick(items[0]);    
   });
 });

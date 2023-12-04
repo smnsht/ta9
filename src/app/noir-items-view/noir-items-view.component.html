@@ -1,4 +1,4 @@
-<table *ngIf="(view$ | async) === 'list'">
+<table *ngIf="'list' === view">
 	<thead>
 		<tr>
 			<th>Color</th>
@@ -9,7 +9,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		<tr *ngFor="let item of items$ | async;" (dblclick)="doubleClick(item)">
+		<tr *ngFor="let item of items" (dblclick)="doubleClick(item)">
 			<td>
 				<div class="color-button" [ngStyle]="{'background-color': item.color}">&nbsp;</div>
 			</td>
@@ -21,8 +21,8 @@
 	</tbody>
 </table>
 
-<div class="grid-container" *ngIf="(view$ | async) === 'tiles'">	
-	<div class="grid-item" *ngFor="let item of items$ | async">
+<div class="grid-container" *ngIf="'tiles' === view">	
+	<div class="grid-item" *ngFor="let item of items">
 		<div class="color-button" 
 			[ngStyle]="{'background-color': item.color}" 
 			(dblclick)="doubleClick(item)">
@@ -32,6 +32,6 @@
 	</div>	
 </div>
 
-<p *ngIf="(items$ | async)?.length">	
+<p *ngIf="items?.length">	
 	<i>Double click on row/cell to edit item</i>
 </p>

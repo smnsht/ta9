@@ -9,25 +9,14 @@ import { NoirItemsFormComponent } from '../noir-items-form/noir-items-form.compo
 import { LoaderComponent } from '../loader.component';
 import { NoirItemsViewComponent } from '../noir-items-view/noir-items-view.component';
 import { ItemsState } from '../state/items.state';
-
-import { 
-  addNewItem, 
-  itemCreated, 
-  itemUpdated, 
-  nextPageClick, 
-  prevPageClick, 
-  setFilter, 
-  setItems, 
-  setItemsView, 
-  setRowsPerPage 
-} from '../state/items.reducer';
+import * as ItemActions from '../state/items.reducer';
 
 import { 
   filterSelector, 
+  itemsSelector, 
   pagerSelector, 
   selectedItemSelector 
 } from '../state/items.selectors';
-
 
 @Component({
   selector: 'app-noir-items',
@@ -46,6 +35,7 @@ export class NoirItemsComponent implements OnInit {
   view: ItemsViewType = 'list';
   loading = false;
   
+  items$: Observable<Item[]>;
   filter$: Observable<string>;
   pager$: Observable<Pager>;
   selectedItem$: Observable<Item | undefined>;
@@ -54,6 +44,7 @@ export class NoirItemsComponent implements OnInit {
     private itemsService: ItemsService,
     private store: Store<ItemsState>
   ) {
+    this.items$ = this.store.select(itemsSelector)
     this.pager$ = this.store.select(pagerSelector);
     this.filter$ = this.store.select(filterSelector);
     this.selectedItem$ = this.store.select(selectedItemSelector)
@@ -64,7 +55,7 @@ export class NoirItemsComponent implements OnInit {
     
     this.itemsService.get().subscribe({
       next: items => { 
-        this.store.dispatch(setItems({ items }));
+        this.store.dispatch(ItemActions.setItems({ items }));
         this.loading = false;
       },
       error: this.itemsServiceError
@@ -73,33 +64,40 @@ export class NoirItemsComponent implements OnInit {
 
   filterInput(event: Event) {
     const input: HTMLInputElement = <HTMLInputElement>event.target;
-    const action = setFilter({ filter: input.value });
+    const action = ItemActions.setFilter({ filter: input.value });
 
     this.store.dispatch(action);
   }
 
   rowsPerPageChanged(val: number): void {
     this.store.dispatch(
-      setRowsPerPage({ rowsPerPage: val })
+      ItemActions.setRowsPerPage({ rowsPerPage: val })
     );
   }
 
   nextPageClick(): void {
-    this.store.dispatch(nextPageClick());
+    this.store.dispatch(ItemActions.nextPageClick());
   }
 
   prevPageClick(): void {
-    this.store.dispatch(prevPageClick());
+    this.store.dispatch(ItemActions.prevPageClick());
   }
 
   addNewClick(): void {
-    this.store.dispatch(addNewItem());
+    this.store.dispatch(ItemActions.addNewItem());
   }
 
   viewClick(view: ItemsViewType): void {
     this.view = view;
-    this.store.dispatch(setItemsView({ view }));
-  }  
+    this.store.dispatch(ItemActions.setItemsView({ view }));
+  }
+  
+  itemSelected(item: Item): void {        
+    this.store.dispatch(ItemActions.editItem({ 
+      item, 
+      override: false 
+    }))    
+  }
 
   saveItem(item: Item): void {    
     this.loading = true;
@@ -111,10 +109,10 @@ export class NoirItemsComponent implements OnInit {
     }    
   }
 
-  private itemsServiceError(err: any): void {
-    alert('Error! View console log for details');
+  private itemsServiceError(err: any): void {    
     console.error(err);
     this.loading = false;
+    alert('Error! View console log for details');
   }
 
   private updateItem(item: Item) {
@@ -122,7 +120,7 @@ export class NoirItemsComponent implements OnInit {
       .update(item)
       .subscribe({
         next: (item) => {
-          this.store.dispatch(itemUpdated({ item }));
+          this.store.dispatch(ItemActions.itemUpdated({ item }));
           this.loading = false;
           alert('Item successfully updated!'); 
         },
@@ -135,7 +133,7 @@ export class NoirItemsComponent implements OnInit {
       .create(item)
       .subscribe({
         next: item => {          
-          this.store.dispatch(itemCreated({ item }));
+          this.store.dispatch(ItemActions.itemCreated({ item }));
           this.loading = false;
           alert('Item successfully created!'); 
         },
