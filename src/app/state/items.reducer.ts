@@ -8,7 +8,7 @@ export const nextPageClick = createAction('Next Page Click');
 export const prevPageClick = createAction('Prev Page Click');
 export const setRowsPerPage = createAction('Set Rows per Page', props<{ rowsPerPage: number }>());
 export const setFilter = createAction('Set filter', props<{ filter: string }>());
-export const editItem = createAction('Edit Item', props<{ item: Item, override: boolean }>());
+export const editItem = createAction('Edit Item', props<{ item: Item }>());
 export const addNewItem = createAction('Add New Item');
 export const cancelEditItem = createAction('Cancel Edit Item');
 export const itemCreated = createAction('New Item Created', props<{ item: Item }>());
@@ -52,13 +52,11 @@ export const reducer = createReducer(
 		}
 	}),
 	
-	on(editItem, (state, { item, override }) => {
-		// if any item already selected and flag 'override' not set, the state not altered
-		if(!override && state.selectedItem) {
-			return { ...state };
+	on(editItem, (state, { item }) => {		
+		return { 
+			...state, 
+			selectedItem: item 
 		}
-
-		return { ...state, selectedItem: item }
 	}),
 	on(addNewItem, (state) => {
 		return {
@@ -79,21 +77,17 @@ export const reducer = createReducer(
 			selectedItem: undefined
 		}
 	}),	
-	on(itemUpdated, (state, { item }) => {		
-		const index = state.items.findIndex((i) => i.id == item.id);
-		
-		if(index < 0) {
-			throw new Error("can't find updated item by id!");
-		} 
-		
-		const newItems = [...state.items];
-
-		// replace item where it was
-		newItems[index] = item;
-		
-		return { ...state, items: newItems }
+	on(itemUpdated, (state, { item }) => {				
+		return { 
+			...state, 
+			// replace item at index where it was
+			items: state.items.map(i => item.id === i.id ? item : i)			
+		}
 	}),	
 	on(setItemsView, (state, { view }) => {
-		return { ...state, view }
+		return { 
+			...state, 
+			view 
+		}
 	})
 );

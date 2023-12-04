@@ -16,7 +16,7 @@ export interface Pager {
 }
 
 export type ItemsViewType = 'list' | 'tiles';
-export type ItemType = Item | null | undefined;
+export type ItemType = Item | null | undefined;  
 
 export class PagerImpl implements Pager {	
 	private _totalRows = 0;

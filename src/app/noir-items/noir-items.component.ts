@@ -11,30 +11,30 @@ import { NoirItemsViewComponent } from '../noir-items-view/noir-items-view.compo
 import { ItemsState } from '../state/items.state';
 import * as ItemActions from '../state/items.reducer';
 
-import { 
-  filterSelector, 
-  itemsSelector, 
-  pagerSelector, 
-  selectedItemSelector 
+import {
+  filterSelector,
+  itemsSelector,
+  pagerSelector,
+  selectedItemSelector
 } from '../state/items.selectors';
 
 @Component({
   selector: 'app-noir-items',
   standalone: true,
   imports: [
-    CommonModule, 
-    LoaderComponent,     
-    PagerComponent, 
+    CommonModule,
+    LoaderComponent,
+    PagerComponent,
     NoirItemsViewComponent,
-    NoirItemsFormComponent, 
-  ],  
+    NoirItemsFormComponent,
+  ],
   templateUrl: './noir-items.component.html',
   styleUrl: './noir-items.component.css'
 })
 export class NoirItemsComponent implements OnInit {
   view: ItemsViewType = 'list';
   loading = false;
-  
+
   items$: Observable<Item[]>;
   filter$: Observable<string>;
   pager$: Observable<Pager>;
@@ -52,9 +52,9 @@ export class NoirItemsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loading = true;
-    
+
     this.itemsService.get().subscribe({
-      next: items => { 
+      next: items => {
         this.store.dispatch(ItemActions.setItems({ items }));
         this.loading = false;
       },
@@ -91,25 +91,26 @@ export class NoirItemsComponent implements OnInit {
     this.view = view;
     this.store.dispatch(ItemActions.setItemsView({ view }));
   }
-  
-  itemSelected(item: Item): void {        
-    this.store.dispatch(ItemActions.editItem({ 
-      item, 
-      override: false 
-    }))    
+
+  itemSelected(item: Item): void {
+    this.store.dispatch(ItemActions.editItem({ item }))
   }
 
-  saveItem(item: Item): void {    
+  itemSelectionCanceled(): void {
+    this.store.dispatch(ItemActions.cancelEditItem());
+  }
+
+  saveItem(item: Item): void {
     this.loading = true;
 
-    if(item.id) {
+    if (item.id) {
       this.updateItem(item);
     } else {
       this.createItem(item);
-    }    
+    }
   }
 
-  private itemsServiceError(err: any): void {    
+  private itemsServiceError(err: any): void {
     console.error(err);
     this.loading = false;
     alert('Error! View console log for details');
@@ -122,20 +123,20 @@ export class NoirItemsComponent implements OnInit {
         next: (item) => {
           this.store.dispatch(ItemActions.itemUpdated({ item }));
           this.loading = false;
-          alert('Item successfully updated!'); 
+          alert('Item successfully updated!');
         },
         error: this.itemsServiceError
-      });    
+      });
   }
 
   private createItem(item: Item) {
     this.itemsService
       .create(item)
       .subscribe({
-        next: item => {          
+        next: item => {
           this.store.dispatch(ItemActions.itemCreated({ item }));
           this.loading = false;
-          alert('Item successfully created!'); 
+          alert('Item successfully created!');
         },
         error: this.itemsServiceError
       });

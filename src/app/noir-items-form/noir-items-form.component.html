@@ -1,27 +1,22 @@
-<dialog *ngIf="item" open>
+<dialog open>
 	<header>
 		<button (click)="closeClick()">x</button>
 	</header>
 	
-	<h3 *ngIf="!item.id">Add New Item</h3>
-	<h3 *ngIf="item.id">Edit Item</h3>
+	<h3 *ngIf="item?.id">Edit Item</h3>	
+	<h3 *ngIf="!item?.id">Add New Item</h3>
 	
-	<form #itemForm="ngForm">
+	<form [formGroup]="form">
 		<div>
 			<label for="name">Name/Tag</label>
 			<input 
 				type="text" 
 				id="name" 
 				name="name" 
-				size="20"				
-				required
-				minlength="2"
-				maxlength="20"								
-				pattern="^[^<>\x22\x27\x60]+$"
+				size="20"								
 				placeholder="Type tag name..."
 				autocomplete="off"
-				[(ngModel)]="item.name" 
-				#name="ngModel"
+				formControlName="name" 				
 			/>			
 		</div>
 		<div *ngIf="name.invalid && (name.dirty || name.touched)" class="validation-messages">  		
@@ -36,10 +31,8 @@
 			<input 
 				type="color" 
 				name="color" 
-				id="color"
-				required
-				[(ngModel)]="item.color" 
-				#color="ngModel"
+				id="color"				
+				formControlName="color" 				
 			/>			
 		</div>		
 		<div *ngIf="color.invalid && (color.dirty || color.touched)" class="validation-messages">
@@ -49,6 +42,6 @@
 		
 	<div class="footer">
 		<button (click)="closeClick()">Cancel</button>
-		<button (click)="saveClick()" [disabled]="itemForm.invalid">Save</button>
+		<button (click)="saveClick()" [disabled]="form.invalid">Save</button>
 	</div>
 </dialog>

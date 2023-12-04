@@ -1,52 +1,73 @@
 import { CommonModule } from '@angular/common';
-import { ItemsState } from '../state/items.state';
-import { Store } from '@ngrx/store';
-import { Item, ItemType } from '../app.models';
-import { FormsModule } from '@angular/forms';
-import { cancelEditItem } from '../state/items.reducer';
+import { Item } from '../app.models';
 
-import { 
-  Component, 
-  EventEmitter, 
-  Input, 
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms';
+
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
   Output
 } from '@angular/core';
+
 
 @Component({
   selector: 'app-noir-items-form',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './noir-items-form.component.html',
   styleUrl: './noir-items-form.component.css'
 })
-export class NoirItemsFormComponent {
+export class NoirItemsFormComponent implements OnInit {
+
+  @Input()
+  item?: Item;
 
   @Output()
   saveClicked = new EventEmitter<Item>();
 
-  private itemClone: ItemType;
+  @Output()
+  cancelEditClick = new EventEmitter();
 
-  @Input()
-  set item(value : ItemType) {    
-    if(value) {
-      this.itemClone = Object.assign({}, value);      
-    } else {
-      delete this.itemClone;
-    }
+  form = new FormGroup({
+    name: new FormControl('', [
+      Validators.required,
+      Validators.minLength(2),
+      Validators.maxLength(20),
+      Validators.pattern("^[^<>\x22\x27\x60]+$")
+    ]),
+    color: new FormControl('', [Validators.required])
+  });
+
+  get name(): FormControl {
+    return this.form.controls.name;
   }
 
-  get item(): ItemType {
-    return this.itemClone;
+  get color(): FormControl {
+    return this.form.controls.color;
   }
 
-  constructor(private store: Store<ItemsState>){}  
-  
-  closeClick(): void {    
-    this.store.dispatch(cancelEditItem());
+  ngOnInit(): void {
+    this.form.setValue({
+      name: this.item?.name ?? null,
+      color: this.item?.color ?? null
+    })
   }
 
-  saveClick(): void {        
-    this.saveClicked.emit(this.itemClone!);
+  closeClick(): void {
+    this.cancelEditClick.emit();
+  }
+
+  saveClick(): void {
+    const item = { ...this.item, ...this.form.value };
+    this.saveClicked.emit(<Item>item);
+
     this.closeClick();
   }
 }

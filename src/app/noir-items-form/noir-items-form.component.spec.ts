@@ -12,50 +12,35 @@ describe('NoirItemsFormComponent', () => {
     "created_by": "Robert Mugabe"
   } as const;
 
-
   let component: NoirItemsFormComponent;
-  let mockStore = {
-    select: () => {},
-    dispatch: (action: any) => { action }
-  };
 
-  beforeEach(() => {
-    mockStore = {
-      select: () => {},
-      dispatch: () => {}
-    };
-    
-    component = new NoirItemsFormComponent(mockStore as any);
+  beforeEach(() => {    
+    component = new NoirItemsFormComponent();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('item setter', () => {
+  it('ngOnInit() should set form defaults', () => {
     expect(component.item).toBeUndefined();
 
     component.item = item;
+    component.ngOnInit();
 
-    expect(component.item).toEqual(item);
-    expect(component['itemClone']).toEqual(item);
-
-    component.item = null;
-
-    expect(component.item).toBeFalsy();
-    expect(component['itemClone']).toBeUndefined();
+    expect(component.name.value).toEqual(item.name);
+    expect(component.color.value).toEqual(item.color);    
   });
 
-  it('closeClick() dispatches cancelEditItem() action', () => {
-    spyOn(mockStore, 'dispatch').and.callFake(action => {      
-      expect(action.type).toBe('Cancel Edit Item');
-    });
-
+  it('closeClick() raises cancelEditClick event', () => {
+    component.cancelEditClick.subscribe((val) => expect(val).toBeUndefined());
+    
     component.closeClick();    
   });
 
   it('saveClick() raises saveClicked', () => {
     component.item = item;
+    component.ngOnInit();
     component.saveClicked.subscribe(val => expect(val).toEqual(item));
     component.saveClick();
   });

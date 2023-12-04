@@ -28,7 +28,9 @@
 	<app-loader *ngIf="loading"></app-loader>	
 
 	<app-noir-items-form 
-		[item]="selectedItem$ | async" 
+		*ngIf="selectedItem$ | async as selectedItem"
+		[item]="selectedItem" 
+		(cancelEditClick)="itemSelectionCanceled()"
 		(saveClicked)="saveItem($event)"
 	>
 	</app-noir-items-form>
