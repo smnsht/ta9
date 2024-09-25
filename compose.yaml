@@ -1,0 +1,10 @@
+services:
+  ta9-client:
+    image: ta9-client
+    ports:
+      - "4200:4200"    
+
+  ta9-server:
+    image: ta9-server
+    ports:
+      - "3000:3000"

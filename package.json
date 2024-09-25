@@ -3,12 +3,13 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve",    
+    "start-docker": "ng serve --host 0.0.0.0",    
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "server": "json-server --port 3000 --delay 2000 --watch server/noir_db.json",
-    "lint": "ng lint"
+    "server": "json-server --port 3000 --delay 2000 --watch server/noir_db.json",    
+    "lint": "ng lint"    
   },
   "private": true,
   "dependencies": {
